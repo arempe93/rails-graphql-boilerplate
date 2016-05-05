@@ -138,7 +138,7 @@ Configure the database by adding a database gem and editing the `config/database
 
 #### Rename Rails module
 
-Rename the Rails application module in `config/application.rb` and `config/routes.rb` from `YourApplication` to something more relevant.
+Rename the Rails application module in `config/application.rb` and `config/routes.rb` from `YourApplication` to something more relevant. Also remember to change this in `config/initializers/session_store.rb` if you plan to use cookies.
 
 #### Optional Trick
 

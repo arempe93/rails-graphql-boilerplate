@@ -1,4 +1,4 @@
-IMThingy::Application.routes.draw do
+YourApplication::Application.routes.draw do
 
   mount API::Base => '/'
 
