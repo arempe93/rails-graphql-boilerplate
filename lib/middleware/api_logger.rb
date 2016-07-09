@@ -1,8 +1,6 @@
 module Middleware
   class APILogger < Grape::Middleware::Base
-    
     def before
-
       request_method = env['REQUEST_METHOD']
 
       Rails.logger.info "REQUEST METHOD:\t#{request_method}"
@@ -10,6 +8,5 @@ module Middleware
       Rails.logger.info "QUERY STRING:\t#{env['QUERY_STRING']}" unless request_method == 'POST'
       Rails.logger.info "POST PARAMS:\t#{env['rack.request.form_hash']}" if request_method == 'POST'
     end
-
   end
 end

@@ -1,7 +1,6 @@
 module API
   module Support
     module Errors
-
       STATUS_TEXT = {
         400 => 'Bad Request',
         401 => 'Unauthorized',
@@ -22,25 +21,24 @@ module API
       end
 
       def unauthorized!(*args)
-        respond_with_error!(400, *args)
+        respond_with_error!(401, *args)
       end
 
       def forbidden!(*args)
-        respond_with_error!(400, *args)
+        respond_with_error!(403, *args)
       end
 
       def not_found!(*args)
-        respond_with_error!(400, *args)
+        respond_with_error!(404, *args)
       end
 
       def unprocessable!(*args)
-        respond_with_error!(400, *args)
+        respond_with_error!(422, *args)
       end
 
       def server_error!(*args)
-        respond_with_error!(400, *args)
+        respond_with_error!(500, *args)
       end
-
     end
   end
 end

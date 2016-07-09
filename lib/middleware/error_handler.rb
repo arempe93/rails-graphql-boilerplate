@@ -1,14 +1,9 @@
 module Middleware
   class ErrorHandler < Grape::Middleware::Base
-
     def call!(env)
-
-      # capture env
       @env = env
 
       begin
-
-        # make api call
         @app.call @env
 
       rescue => e
@@ -25,8 +20,8 @@ module Middleware
     end
 
     private
-    def catch_error(e)
 
+    def catch_error(e)
       response = {
         code: '500',
         message: e.message
