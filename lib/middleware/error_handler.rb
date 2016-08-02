@@ -24,7 +24,7 @@ module Middleware
     def catch_error(e)
       response = {
         code: '500',
-        message: e.message
+        message: e.message,
         backtrace: e.backtrace
       }
 
