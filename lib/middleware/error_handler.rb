@@ -5,12 +5,10 @@ module Middleware
 
       begin
         @app.call @env
-
       rescue => e
-
         # let grape handle param validation errors
         raise e if e.is_a?(Grape::Exceptions::ValidationErrors)
-        
+
         Rails.logger.error "API ERROR: #{e.message}"
         Rails.logger.error "API ERROR: #{e.backtrace.join("\n\t")}"
 
@@ -28,7 +26,7 @@ module Middleware
         backtrace: e.backtrace
       }
 
-      [ 500, { 'Content-Type' => 'application/json' }, [ response.to_json ] ]
+      [500, { 'Content-Type' => 'application/json' }, [response.to_json]]
     end
   end
 end

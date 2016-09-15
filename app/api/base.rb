@@ -1,6 +1,5 @@
 module API
   class Base < Grape::API
-
     use Middleware::APILogger
     use Middleware::ErrorHandler
 
