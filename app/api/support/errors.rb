@@ -13,7 +13,7 @@ module API
       def respond_with_error!(status, *args)
         message = args.shift || STATUS_TEXT[status]
         code = args.shift || status.to_s
-        error!({ code: code, message: message }, status)
+        error!({ code: code, message: message, backtrace: caller.drop(1).take(10) }, status)
       end
 
       def bad_request!(*args)
