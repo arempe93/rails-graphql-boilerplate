@@ -70,29 +70,26 @@ GEM
       activesupport (>= 2.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
-    grape (0.14.0)
+    grape (1.0.1)
       activesupport
       builder
-      hashie (>= 2.1.0)
-      multi_json (>= 1.3.2)
-      multi_xml (>= 0.5.2)
+      mustermann-grape (~> 1.0.0)
       rack (>= 1.3.0)
       rack-accept
-      rack-mount
       virtus (>= 1.0.0)
-    grape-entity (0.4.8)
-      activesupport
+    grape-entity (0.6.1)
+      activesupport (>= 5.0.0)
       multi_json (>= 1.3.2)
-    grape-swagger (0.10.4)
-      grape (>= 0.8.0)
-      grape-entity (< 0.5.0)
-    grape-swagger-rails (0.1.0)
-      grape-swagger (>= 0.7.2)
+    grape-swagger (0.27.3)
+      grape (>= 0.16.2)
+    grape-swagger-entity (0.2.3)
+      grape-entity (>= 0.5.0)
+      grape-swagger (>= 0.20.4)
+    grape-swagger-rails (0.3.0)
       railties (>= 3.2.12)
-    hashie (3.4.3)
     i18n (0.9.1)
       concurrent-ruby (~> 1.0)
-    ice_nine (0.11.1)
+    ice_nine (0.11.2)
     loofah (2.1.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -102,8 +99,10 @@ GEM
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.10.3)
-    multi_json (1.11.2)
-    multi_xml (0.5.5)
+    multi_json (1.12.2)
+    mustermann (1.0.1)
+    mustermann-grape (1.0.0)
+      mustermann (~> 1.0.0)
     nio4r (2.1.0)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
@@ -112,8 +111,6 @@ GEM
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-cors (0.4.0)
-    rack-mount (0.8.3)
-      rack (>= 1.0.0)
     rack-test (0.8.2)
       rack (>= 1.0, < 3)
     rails (5.1.4)
@@ -190,6 +187,7 @@ DEPENDENCIES
   grape
   grape-entity
   grape-swagger
+  grape-swagger-entity
   grape-swagger-rails
   pg
   rack-cors

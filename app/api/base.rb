@@ -17,7 +17,7 @@ module API
 
     add_swagger_documentation hide_format: true
 
-    route [:get, :post, :put, :patch, :delete], '*path' do
+    route %i[get post put patch delete], '*path' do
       not_found! '404', 'API endpoint does not exist'
     end
   end
