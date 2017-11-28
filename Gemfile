@@ -1,14 +1,13 @@
 source 'https://rubygems.org'
 
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.1'
+gem 'rails', '~> 5.1'
 
 # Grape API
 gem 'grape'
 gem 'grape-entity'
 
 # Rack CORS
-gem 'rack-cors', :require => 'rack/cors'
+gem 'rack-cors', require: 'rack/cors'
 
 # Swagger API doc
 gem 'grape-swagger'
@@ -20,13 +19,14 @@ gem 'enumerate_it'
 # Global configs
 gem 'global'
 
-# Colored logging
-gem 'shog'
-
 # Database
 gem 'pg'
 
 group :development, :test do
+  # Testing
+  gem 'rspec'
+  gem 'rspec-rails'
+  gem 'rack-test'
 
   # Spring
   gem 'spring'
@@ -39,15 +39,9 @@ group :development, :test do
 end
 
 group :test do
+  # Model factories
+  gem 'factory_girl_rails', '~> 4.0'
 
-    # Rspec
-    gem 'rspec'
-    gem 'rspec-rails'
-    gem 'rack-test'
-
-    # Model factories
-    gem 'factory_girl_rails', '~> 4.0'
-
-    # Database transaction cleaning
-    gem 'database_cleaner'
+  # Database transaction cleaning
+  gem 'database_cleaner'
 end
