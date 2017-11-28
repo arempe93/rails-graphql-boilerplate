@@ -11,7 +11,6 @@ ActiveRecord::Migration.maintain_test_schema!
 Dir[File.dirname(__FILE__) + '/support/*.rb'].each { |file| require file }
 
 RSpec.configure do |config|
-
   config.include FactoryGirl::Syntax::Methods
 
   config.include Rack::Test::Methods, type: :request, file_path: %r{spec/api}
@@ -19,7 +18,7 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with :truncation
+    DatabaseCleaner.clean_with(:truncation)
   end
 
   config.around(:each) do |example|
