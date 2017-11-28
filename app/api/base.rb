@@ -1,6 +1,8 @@
 module API
   class Base < Grape::API
-    use Middleware::APILogger
+    insert_after Grape::Middleware::Formatter,
+                 Grape::Middleware::Logger
+
     use Middleware::ErrorHandler
 
     prefix :api
@@ -9,16 +11,12 @@ module API
     helpers Support::Errors
     helpers Support::Helpers
 
-    ####
-    #
-    # MOUNT YOUR API FILES HERE
-    #
-    ####
+    mount Example
 
     add_swagger_documentation hide_format: true
 
     route %i[get post put patch delete], '*path' do
-      not_found! '404', 'API endpoint does not exist'
+      not_found! 'API endpoint does not exist'
     end
   end
 end

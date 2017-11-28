@@ -5,6 +5,7 @@ gem 'rails', '~> 5.1'
 # Grape API
 gem 'grape'
 gem 'grape-entity'
+gem 'grape-middleware-logger', github: 'arempe93/grape-middleware-logger'
 
 # Rack CORS
 gem 'rack-cors', require: 'rack/cors'

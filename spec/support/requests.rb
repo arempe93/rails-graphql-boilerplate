@@ -10,7 +10,7 @@ module Support
     end
 
     def json
-      JSON.parse(last_response.body).deep_symobolize_keys
+      JSON.parse(last_response.body).deep_symbolize_keys
     end
 
     def redirect_location

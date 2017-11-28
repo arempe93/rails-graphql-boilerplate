@@ -1,7 +1,7 @@
 module API
   class Example < Grape::API
     get :example do
-      'hello world'
+      { hello: 'world' }
     end
   end
 end

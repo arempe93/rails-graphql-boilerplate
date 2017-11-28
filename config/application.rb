@@ -6,14 +6,34 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+require_relative '../lib/tagged_timestamp_logger'
+require_relative '../lib/grape_filter_logger'
+
 module YourApplication
   class Application < Rails::Application
+    # Disable rails rack logging in grape endpoints
+    config.middleware.swap Rails::Rack::Logger, GrapeFilterLogger
+
     # Load Grape API and enumerations
     config.paths.add 'app/api', glob: '**/*.rb'
     config.paths.add 'app/enums', glob: '**/*.rb'
-    config.autoload_paths += Dir["#{Rails.root}/app"]
+    config.autoload_paths << "#{config.root}/app"
+
+    # Load STI folders
+    config.autoload_paths += Dir[Rails.root.join('app', 'models', '**/')]
 
     # Load lib
-    config.autoload_paths << Rails.root.join('lib')
+    config.autoload_paths << "#{config.root}/lib"
+
+    # Custom logger
+    def build_logger(path:)
+      logger = Logger.new(path)
+      logger.formatter = TaggedTimestampLogger
+      ActiveSupport::TaggedLogging.new(logger)
+    end
+
+    Dir.mkdir('log') unless File.directory?('log')
+
+    config.logger = build_logger(path: "log/#{Rails.env}.log")
   end
 end

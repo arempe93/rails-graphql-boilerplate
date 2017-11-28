@@ -16,12 +16,12 @@
 describe API::Example do
   context 'GET /' do
     before do
-      get '/example'
+      get '/api/example'
     end
 
     it 'should respond with 200' do
       expect_status 200
-      expect(last_response.body).to eql 'hello world'
+      expect(json[:hello]).to eql 'world'
     end
   end
 end
