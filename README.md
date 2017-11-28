@@ -30,21 +30,21 @@ The standard response the middleware will return for any uncaught exception is a
 
 ```javascript
 {
-	"code": "500",
-	"message": "Something bad has happened",
-	"backtrace": [
-		...
-	]
+  "code": "500",
+  "message": "Something bad has happened",
+  "backtrace": [
+    ...
+  ]
 }
 ```
 
-This format is entirely confiugrable as a Hash in `lib/middleware/error_handler.rb`. And it also logs the error, using red bold text from shog as mentioned before, in this format
+This format is entirely confiugrable as a Hash in `lib/middleware/error_handler.rb`.
 
 ```
-API ERROR:	Something bad has happened
-API ERROR:	[stack trace]
-			[stack trace]
-			...
+API ERROR:  Something bad has happened
+API ERROR:  [stack trace]
+            [stack trace]
+            ...
 ```
 
 #### 404 Handling
@@ -116,7 +116,7 @@ I find that enumerations and Grape APIs work very well together, especially for 
 ```ruby
 desc 'An enum validation example'
 params do
-	optional :foo_type, type: Integer, values: Enums::FooType.list
+  optional :foo_type, type: Integer, values: Enums::FooType.list
 end
 ```
 
