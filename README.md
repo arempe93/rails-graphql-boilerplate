@@ -12,13 +12,15 @@ Goodies included besides setting up the inital Grape mounting
 Includes custom middleware to log every request in the following format
 
 ```
-REQUEST METHOD:		GET
-REQUEST PATH:		/api/foo
-QUERY STRING:		bar=baz
-POST PARAMS:		{ "bar": "baz" }	# if method is POST
+[req_d76f6278]
+[req_d76f6278] Started GET '/api/example' at 2017-11-27 22:27:50 -0500
+[req_d76f6278] Processing by API::Example/example
+[req_d76f6278]   Parameters: {}
+[req_d76f6278] Completed 200: total=2.33ms - db=0.0ms
+[req_d76f6278]
 ```
 
-Also included is the [Shog](https://github.com/phallguy/shog) gem, which provides log coloring and formatting based on regular expressions. In a config file, these logs are set to be bold green
+`req_d76f6278` is a request id that is helpful when `grep`-ing
 
 #### Error Reporting Middleware
 
@@ -44,12 +46,6 @@ API ERROR:	[stack trace]
 			[stack trace]
 			...
 ```
-
-#### Spec Optimizations
-
-By default, Rails will do a lot of work building the Grape API over and over again because of the way `rspec/rails` works with request based tests. In this boilerplate, `rspec/rails` is removed in favor of `Rack::Test`. Specs created in the `spec/api` folder will automatically be set up to be tested atomically by `Rack::Test`. 
-
-This increases the run speed of spec suites greatly.
 
 #### 404 Handling
 
@@ -82,10 +78,8 @@ error!({ code: '404.12', message: 'User was not found' }, 404)
 to writing something a little more quickly understandable
 
 ```ruby
-not_found! 'User was not found', '404.12'
+not_found! 'User was not found', code: '404.12'
 ```
-
-The format for these messages is configurable in 
 
 #### Automatic Model Annotation
 
