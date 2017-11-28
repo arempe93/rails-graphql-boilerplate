@@ -1,8 +1,8 @@
 default: &default
-  adapter: postgresql
+  adapter: mysql2
   host: localhost
-  username: <%= ENV['PG_USER'] %>
-  password: <%= ENV['PG_PASS'] %>
+  username: <%= ENV['MYSQL_USER'] %>
+  password: <%= ENV['MYSQL_PASS'] %>
 
 development:
   <<: *default

@@ -21,7 +21,7 @@ gem 'enumerate_it'
 gem 'global'
 
 # Database
-gem 'pg'
+gem 'mysql2'
 
 group :development, :test do
   # Testing
