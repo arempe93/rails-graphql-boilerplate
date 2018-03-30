@@ -22,7 +22,7 @@ gem 'enumerate_it'
 gem 'global'
 
 # Database
-gem 'mysql2'
+gem 'mysql2', '~> 0.4.10'
 
 group :development, :test do
   # Testing
@@ -42,7 +42,7 @@ end
 
 group :test do
   # Model factories
-  gem 'factory_girl_rails', '~> 4.0'
+  gem 'factory_girl_rails', '= 4.8.0'
 
   # Database transaction cleaning
   gem 'database_cleaner'

@@ -6,7 +6,7 @@ module API
                          include_missing: false)
       end
 
-      def find(collection, query, code = nil)
+      def find(collection, quexry, code = nil)
         collection.find_by(query).tap do |m|
           unless m
             class_name = collection.respond_to?(:model) ? collection.model.name : collection
