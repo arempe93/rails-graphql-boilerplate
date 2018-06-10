@@ -27,7 +27,6 @@ gem 'mysql2', '~> 0.5'
 group :development, :test do
   # Testing
   gem 'rspec'
-  gem 'rspec-rails'
   gem 'rack-test'
 
   # Spring

@@ -164,14 +164,6 @@ GEM
     rspec-mocks (3.7.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.7.0)
-    rspec-rails (3.7.2)
-      actionpack (>= 3.0)
-      activesupport (>= 3.0)
-      railties (>= 3.0)
-      rspec-core (~> 3.7.0)
-      rspec-expectations (~> 3.7.0)
-      rspec-mocks (~> 3.7.0)
-      rspec-support (~> 3.7.0)
     rspec-support (3.7.1)
     spring (2.0.2)
       activesupport (>= 4.2)
@@ -216,7 +208,6 @@ DEPENDENCIES
   rack-test
   rails (~> 5.2)
   rspec
-  rspec-rails
   spring
 
 BUNDLED WITH
