@@ -22,7 +22,7 @@ gem 'enumerate_it'
 gem 'global'
 
 # Database
-gem 'mysql2', '~> 0.4.10'
+gem 'mysql2', '~> 0.5'
 
 group :development, :test do
   # Testing

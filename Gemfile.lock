@@ -117,7 +117,7 @@ GEM
     mustermann (1.0.2)
     mustermann-grape (1.0.0)
       mustermann (~> 1.0.0)
-    mysql2 (0.4.10)
+    mysql2 (0.5.1)
     nio4r (2.3.1)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
@@ -211,7 +211,7 @@ DEPENDENCIES
   grape-swagger
   grape-swagger-entity
   grape-swagger-rails
-  mysql2 (~> 0.4.10)
+  mysql2 (~> 0.5)
   rack-cors
   rack-test
   rails (~> 5.2)
