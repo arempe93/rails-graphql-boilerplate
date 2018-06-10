@@ -62,6 +62,7 @@ GEM
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     concurrent-ruby (1.0.5)
+    connection_pool (2.2.2)
     crass (1.0.4)
     database_cleaner (1.6.2)
     descendants_tracker (0.0.4)
@@ -131,6 +132,8 @@ GEM
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-cors (1.0.2)
+    rack-protection (2.0.3)
+      rack
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
     rails (5.2.0)
@@ -159,6 +162,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (3.0.0)
     rake (12.3.1)
+    redis (4.0.1)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
       rspec-expectations (~> 3.7.0)
@@ -181,6 +185,16 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.9.0)
+    sidekiq (5.1.3)
+      concurrent-ruby (~> 1.0)
+      connection_pool (~> 2.2, >= 2.2.0)
+      rack-protection (>= 1.5.0)
+      redis (>= 3.3.5, < 5)
+    sinatra (2.0.3)
+      mustermann (~> 1.0)
+      rack (~> 2.0)
+      rack-protection (= 2.0.3)
+      tilt (~> 2.0)
     spring (2.0.2)
       activesupport (>= 4.2)
     sprockets (3.7.1)
@@ -192,6 +206,7 @@ GEM
       sprockets (>= 3.0.0)
     thor (0.20.0)
     thread_safe (0.3.6)
+    tilt (2.0.8)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     unicode-display_width (1.4.0)
@@ -224,8 +239,11 @@ DEPENDENCIES
   rack-cors
   rack-test
   rails (~> 5.2)
+  redis
   rspec
   rubocop
+  sidekiq
+  sinatra
   spring
 
 BUNDLED WITH

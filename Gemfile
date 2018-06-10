@@ -24,6 +24,11 @@ gem 'global'
 # Database
 gem 'mysql2', '~> 0.5'
 
+# Background Jobs
+gem 'redis'
+gem 'sidekiq'
+gem 'sinatra', require: false
+
 group :development, :test do
   # Linting
   gem 'rubocop'
