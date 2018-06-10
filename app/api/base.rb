@@ -5,13 +5,17 @@ module API
     insert_after Grape::Middleware::Formatter,
                  Grape::Middleware::Logger
 
-    use Middleware::ErrorHandler
-
     prefix :api
     format :json
 
     helpers Support::Errors
     helpers Support::Helpers
+
+    rescue_from Grape::Exceptions::ValidationErrors do |e|
+      bad_request!(message: 'Bad Request', errors: e.full_messages)
+    end
+
+    rescue_from :all { |e| server_error!(e.message) }
 
     mount Example
 

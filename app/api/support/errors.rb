@@ -11,40 +11,44 @@ module API
         error!(payload, status)
       end
 
-      def bad_request!(message = 'Bad Request', code: '400')
-        respond_with_error!(400, message, code)
+      def bad_request!(message, code: '400')
+        respond_with_error!(400, message || 'Bad Request', code)
       end
 
-      def unauthorized!(message = 'Unauthorized', code: '401')
-        respond_with_error!(401, message, code, backtrace: false)
+      def unauthorized!(message, code: '401')
+        respond_with_error!(401, message || 'Unauthorized', code, backtrace: false)
       end
 
-      def payment_required!(message = 'Payment Required', code: '402')
-        respond_with_error!(402, message, code)
+      def payment_required!(message, code: '402')
+        respond_with_error!(402, message || 'Payment Required', code)
       end
 
-      def forbidden!(message = 'Forbidden', code: '403')
-        respond_with_error!(403, message, code, backtrace: false)
+      def forbidden!(message, code: '403')
+        respond_with_error!(403, message || 'Forbidden', code, backtrace: false)
       end
 
-      def not_found!(message = 'Not Found', code: '404')
-        respond_with_error!(404, message, code, backtrace: false)
+      def not_found!(message, code: '404')
+        respond_with_error!(404, message || 'Not Found', code, backtrace: false)
       end
 
-      def conflict!(message = 'Conflict', code: '409')
-        respond_with_error!(409, message, code)
+      def not_allowed!(message, code: '405')
+        respond_with_error!(405, message || 'Not Allowed', code, backtrace: false)
       end
 
-      def gone!(message = 'Gone', code: '410')
-        respond_with_error!(410, message, code, backtrace: false)
+      def conflict!(message, code: '409')
+        respond_with_error!(409, message || 'Conflict', code)
       end
 
-      def unprocessable!(message = 'Unprocessable Entity', code: '422')
-        respond_with_error!(422, message, code)
+      def gone!(message, code: '410')
+        respond_with_error!(410, message || 'Gone', code, backtrace: false)
       end
 
-      def server_error!(message = 'Internal Server Error', code: '500')
-        respond_with_error!(500, message, code)
+      def unprocessable!(message, code: '422')
+        respond_with_error!(422, message || 'Unprocessable Entity', code)
+      end
+
+      def server_error!(message, code: '500')
+        respond_with_error!(500, message || 'Internal Server Error', code)
       end
     end
   end
