@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Base < Grape::API
     insert_after Grape::Middleware::Formatter,

@@ -25,6 +25,9 @@ gem 'global'
 gem 'mysql2', '~> 0.5'
 
 group :development, :test do
+  # Linting
+  gem 'rubocop'
+
   # Testing
   gem 'rspec'
   gem 'rack-test'

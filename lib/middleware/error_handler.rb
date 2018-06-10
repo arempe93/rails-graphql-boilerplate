@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Middleware
   class ErrorHandler < Grape::Middleware::Base
     def call!(env)
@@ -5,7 +7,7 @@ module Middleware
 
       begin
         @app.call @env
-      rescue => e
+      rescue StandardError => e
         # let grape handle param validation errors
         raise e if e.is_a?(Grape::Exceptions::ValidationErrors)
 
@@ -13,17 +15,17 @@ module Middleware
         Rails.logger.error "API ERROR: #{e.backtrace.join("\n\t")}"
 
         # rescue from uncaught api exceptions
-        catch_error(e)
+        catch_error(error)
       end
     end
 
     private
 
-    def catch_error(e)
+    def catch_error(error)
       response = {
         code: '500',
-        message: e.message,
-        backtrace: e.backtrace
+        message: error.message,
+        backtrace: error.backtrace
       }
 
       [500, { 'Content-Type' => 'application/json' }, [response.to_json]]
