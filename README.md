@@ -22,30 +22,20 @@ Includes custom middleware to log every request in the following format
 
 `req_d76f6278` is a request id that is helpful when `grep`-ing
 
-#### Error Reporting Middleware
+#### Error Handling
 
-Another helpful middleware, for Rails especially, is a handler for uncaught api exceptions. Normally, whenever your api has an uncaught error, Rails will take over and serve up a 500 with the standard template it uses based on the environment. This can be problematic because it provides clients expecting JSON no indication of what the error might be and it also, depending on your setup, could not be included in the Grape CORS policy. This can cause clients to give unhelpful -1 status codes for the request.
+Normally, whenever your api has an uncaught error, Rails will take over and serve up a 500 with the standard template it uses based on the environment. This can be problematic because it provides clients expecting JSON no indication of what the error might be and it also, depending on your setup, could not be included in the Grape CORS policy. This can cause clients to give unhelpful error messages for the request.
 
 The standard response the middleware will return for any uncaught exception is as follows
 
 ```javascript
 {
-  "code": "500",
   "message": "Something bad has happened",
-  "backtrace": [
-    ...
-  ]
+  "source": "/path/to/file:100"
 }
 ```
 
-This format is entirely confiugrable as a Hash in `lib/middleware/error_handler.rb`.
-
-```
-API ERROR:  Something bad has happened
-API ERROR:  [stack trace]
-            [stack trace]
-            ...
-```
+This format is entirely confiugrable in `app/api/base.rb`.
 
 #### 404 Handling
 
@@ -78,7 +68,7 @@ error!({ code: '404.12', message: 'User was not found' }, 404)
 to writing something a little more quickly understandable
 
 ```ruby
-not_found! 'User was not found', code: '404.12'
+not_found! message: 'User was not found', code: '404.12'
 ```
 
 #### Automatic Model Annotation
