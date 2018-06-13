@@ -25,7 +25,7 @@ if %w[development test].include?(Rails.env)
       puts 'Linting specs...'
 
       patterns = "-e #{DEBUGGING_CODE.join(' -e ')}"
-      command = "grep -nr #{patterns} spec/**/**/* --color=always"
+      command = "grep -nr #{patterns} ./spec/**/*"
 
       output = `#{command}`
       status = $CHILD_STATUS.exitstatus

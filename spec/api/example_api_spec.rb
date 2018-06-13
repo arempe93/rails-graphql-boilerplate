@@ -15,13 +15,15 @@
 
 describe API::Example do
   context 'GET /' do
+    let(:who) { 'world' }
+
     before do
-      get '/api/example'
+      get '/api/example', who: who
     end
 
     it 'should respond with 200' do
       expect_status 200
-      expect(json[:hello]).to eql 'world'
+      expect(json[:hello]).to eql who
     end
   end
 end

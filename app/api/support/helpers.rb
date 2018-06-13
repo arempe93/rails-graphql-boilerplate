@@ -3,17 +3,17 @@
 module API
   module Support
     module Helpers
-      def set(params)
+      def set(params, include_missing: false)
         declared(params, include_parent_namespaces: false,
-                         include_missing: false)
+                         include_missing: include_missing)
       end
 
-      def find(collection, _quexry, code = nil)
-        collection.find_by(query).tap do |m|
-          unless m
-            class_name = collection.respond_to?(:model) ? collection.model.name : collection
-            not_found!(*["#{class_name} with query '#{query}' was not found", code].compact)
-          end
+      def find(collection, query, code = nil)
+        collection.find_by(query).tap do |model|
+          break model if model
+
+          class_name = collection.respond_to?(:model) ? collection.model.name : collection
+          not_found!(*["#{class_name} with query '#{query}' was not found", code].compact)
         end
       end
 
@@ -27,8 +27,9 @@ module API
       end
 
       def sort(query, sort_by: params[:sort_by], sort_direction: params[:sort_direction])
-        # not using hash syntax because Rails will prefix the table name of the collection
-        # model (users.last_name), and that could be undesired behavior (eg. joins)
+        # NOTE: not using hash syntax because Rails will prefix the table name of
+        #   the collection model (eg. users.last_name), and that could be undesired
+        #   behavior (eg. joins)
         query.order("#{sort_by} #{sort_direction}")
       end
     end

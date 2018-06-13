@@ -15,7 +15,9 @@ module API
       bad_request!(message: 'Bad Request', errors: e.full_messages)
     end
 
-    rescue_from :all { |e| server_error!(e.message) }
+    rescue_from(:all) do |e|
+      server_error!(message: e.message, source: e.backtrace.first)
+    end
 
     mount Example
 

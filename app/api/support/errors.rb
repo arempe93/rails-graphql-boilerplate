@@ -3,10 +3,9 @@
 module API
   module Support
     module Errors
-      def respond_with_error!(status, message, code, backtrace: true)
+      def respond_with_error!(status, message, code)
         payload = { code: code.to_s }
         payload.merge!(message.is_a?(String) ? { message: message } : message)
-        payload[:backtrace] = caller.drop(1).take(10) if backtrace
 
         error!(payload, status)
       end
@@ -16,7 +15,7 @@ module API
       end
 
       def unauthorized!(message, code: '401')
-        respond_with_error!(401, message || 'Unauthorized', code, backtrace: false)
+        respond_with_error!(401, message || 'Unauthorized', code)
       end
 
       def payment_required!(message, code: '402')
@@ -24,15 +23,15 @@ module API
       end
 
       def forbidden!(message, code: '403')
-        respond_with_error!(403, message || 'Forbidden', code, backtrace: false)
+        respond_with_error!(403, message || 'Forbidden', code)
       end
 
       def not_found!(message, code: '404')
-        respond_with_error!(404, message || 'Not Found', code, backtrace: false)
+        respond_with_error!(404, message || 'Not Found', code)
       end
 
       def not_allowed!(message, code: '405')
-        respond_with_error!(405, message || 'Not Allowed', code, backtrace: false)
+        respond_with_error!(405, message || 'Not Allowed', code)
       end
 
       def conflict!(message, code: '409')
@@ -40,7 +39,7 @@ module API
       end
 
       def gone!(message, code: '410')
-        respond_with_error!(410, message || 'Gone', code, backtrace: false)
+        respond_with_error!(410, message || 'Gone', code)
       end
 
       def unprocessable!(message, code: '422')
