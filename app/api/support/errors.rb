@@ -3,51 +3,54 @@
 module API
   module Support
     module Errors
-      def respond_with_error!(status, message, code)
-        payload = { code: code.to_s }
-        payload.merge!(message.is_a?(String) ? { message: message } : message)
+      def respond_with_error!(status, message)
+        payload = case message
+                  when String then { message: message }
+                  when Hash then message
+                  else { message: 'An error occurred' }
+                  end
 
         error!(payload, status)
       end
 
-      def bad_request!(message, code: '400')
-        respond_with_error!(400, message || 'Bad Request', code)
+      def bad_request!(message = 'Bad Request')
+        respond_with_error!(400, message)
       end
 
-      def unauthorized!(message, code: '401')
-        respond_with_error!(401, message || 'Unauthorized', code)
+      def unauthorized!(message = 'Unauthorized')
+        respond_with_error!(401, message)
       end
 
-      def payment_required!(message, code: '402')
-        respond_with_error!(402, message || 'Payment Required', code)
+      def payment_required!(message = 'Payment Required')
+        respond_with_error!(402, message)
       end
 
-      def forbidden!(message, code: '403')
-        respond_with_error!(403, message || 'Forbidden', code)
+      def forbidden!(message = 'Forbidden')
+        respond_with_error!(403, message)
       end
 
-      def not_found!(message, code: '404')
-        respond_with_error!(404, message || 'Not Found', code)
+      def not_found!(message = 'Not Found')
+        respond_with_error!(404, message)
       end
 
-      def not_allowed!(message, code: '405')
-        respond_with_error!(405, message || 'Not Allowed', code)
+      def not_allowed!(message = 'Not Allowed')
+        respond_with_error!(405, message)
       end
 
-      def conflict!(message, code: '409')
-        respond_with_error!(409, message || 'Conflict', code)
+      def conflict!(message = 'Conflict')
+        respond_with_error!(409, message)
       end
 
-      def gone!(message, code: '410')
-        respond_with_error!(410, message || 'Gone', code)
+      def gone!(message = 'Gone')
+        respond_with_error!(410, message)
       end
 
-      def unprocessable!(message, code: '422')
-        respond_with_error!(422, message || 'Unprocessable Entity', code)
+      def unprocessable!(message = 'Unprocessable Entity')
+        respond_with_error!(422, message)
       end
 
-      def server_error!(message, code: '500')
-        respond_with_error!(500, message || 'Internal Server Error', code)
+      def server_error!(message = 'Internal Server Error')
+        respond_with_error!(500, message)
       end
     end
   end
