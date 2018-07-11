@@ -24,6 +24,9 @@ gem 'global'
 # Database
 gem 'mysql2', '~> 0.5'
 
+# Authentication
+gem 'bcrypt'
+
 # Background Jobs
 gem 'redis'
 gem 'sidekiq'
