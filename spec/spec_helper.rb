@@ -8,7 +8,7 @@ require 'spec_helper'
 
 ActiveRecord::Migration.maintain_test_schema!
 
-Dir[File.dirname(__FILE__) + '/support/*.rb'].each { |file| require file }
+Dir[File.dirname(__FILE__) + '/helpers/*.rb'].each { |file| require file }
 
 RSpec.configure do |config|
   Rails.application.eager_load!
