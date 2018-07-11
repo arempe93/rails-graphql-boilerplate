@@ -2,8 +2,10 @@
 
 module API
   class Base < Grape::API
+    use Grape::Middleware::Globals
+    use Middleware::RequestId
     insert_after Grape::Middleware::Formatter,
-                 Grape::Middleware::Logger
+                 Middleware::Logger
 
     prefix :api
     format :json

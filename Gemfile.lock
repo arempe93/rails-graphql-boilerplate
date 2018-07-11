@@ -1,10 +1,3 @@
-GIT
-  remote: git://github.com/arempe93/grape-middleware-logger.git
-  revision: 1e3ebe27baea3daeec9295b4843b72152c21fb3f
-  specs:
-    grape-middleware-logger (1.8.0)
-      grape (>= 0.17)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -234,7 +227,6 @@ DEPENDENCIES
   global
   grape
   grape-entity
-  grape-middleware-logger!
   grape-swagger
   grape-swagger-entity
   grape-swagger-rails
