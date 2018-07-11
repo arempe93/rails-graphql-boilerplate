@@ -105,6 +105,7 @@ GEM
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     jaro_winkler (1.5.1)
+    jwt (1.5.4)
     loofah (2.2.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -237,6 +238,7 @@ DEPENDENCIES
   grape-swagger
   grape-swagger-entity
   grape-swagger-rails
+  jwt
   mysql2 (~> 0.5)
   rack-cors
   rack-test

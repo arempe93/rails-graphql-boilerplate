@@ -26,6 +26,7 @@ gem 'mysql2', '~> 0.5'
 
 # Authentication
 gem 'bcrypt'
+gem 'jwt'
 
 # Background Jobs
 gem 'redis'
