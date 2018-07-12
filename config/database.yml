@@ -1,3 +1,5 @@
+# TODO: change database names to application name
+
 default: &default
   adapter: mysql2
   host: localhost

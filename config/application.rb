@@ -9,6 +9,7 @@ Bundler.require(*Rails.groups)
 require_relative '../lib/tagged_timestamp_logger'
 require_relative '../lib/grape_filter_logger'
 
+# TODO: change name to application name
 module YourApplication
   class Application < Rails::Application
     # Disable automatic test generation

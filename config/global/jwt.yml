@@ -1,6 +1,7 @@
 development: &default
   algorithm: HS256
   expiration: <%= 1.month %>
+  # TODO: change name to application name
   issuer: YOURAPP
 
 test:

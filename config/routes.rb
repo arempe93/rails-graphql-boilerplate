@@ -1,3 +1,4 @@
+# TODO: change name to application name
 YourApplication::Application.routes.draw do
   mount API::Base => '/'
 
