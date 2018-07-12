@@ -6,6 +6,9 @@ gem 'rails', '~> 5.2'
 gem 'grape'
 gem 'grape-entity'
 
+# API Helpers
+gem 'request_store'
+
 # Rack CORS
 gem 'rack-cors', require: 'rack/cors'
 

@@ -11,7 +11,7 @@ module ANSIColor
     blue: '34',
     magenta: '35',
     cyan: '36'
-  }
+  }.freeze
 
   CODES.each do |color, code|
     define_method(color) do |string, bold: false|

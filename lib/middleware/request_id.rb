@@ -13,7 +13,7 @@ module Middleware
       @env = env
       request_id = @generator.call
 
-      Thread.current[:request_id] = request_id
+      RequestStore.store[:request_id] = request_id
 
       response = call_with_error_handling do |error|
         error[:headers] ||= {}

@@ -2,12 +2,14 @@
 
 module Middleware
   module Database
+    DB_RUNTIME_KEY = :grape_db_runtime
+
     def db_runtime=(value)
-      Thread.current[:grape_db_runtime] = value
+      RequestStore.store[DB_RUNTIME_KEY] = value
     end
 
     def db_runtime
-      Thread.current[:grape_db_runtime] ||= 0
+      RequestStore.store[DB_RUNTIME_KEY] ||= 0
     end
 
     def reset_db_runtime

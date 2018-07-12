@@ -34,7 +34,7 @@ module Middleware
       @env = env
 
       if logger.respond_to?(:tagged)
-        request_id = Thread.current[:request_id]
+        request_id = RequestStore.store[:request_id]
         logger.tagged(cyan(request_id)) { perform }
       else
         perform
@@ -57,10 +57,12 @@ module Middleware
     end
 
     def log_request
+      request = env[Grape::Env::GRAPE_REQUEST]
+      method = request.request_method
+
       logger.info ''
-      logger.info format("Started %<method>s '%<path>s' at %<time>s", method: green(env[Grape::Env::GRAPE_REQUEST].request_method),
-                                                                      path: blue(env[Grape::Env::GRAPE_REQUEST].path),
-                                                                      time: cyan(@runtime_start.to_s))
+      logger.info format("Started %<method>s '%<path>s'", method: green(method, bold: true),
+                                                          path: cyan(request.path))
       logger.info "Processing by #{red(processed_by, bold: true)}"
       logger.info "  Parameters: #{yellow(parameters)}"
       logger.info "  Headers: #{yellow(print_display_headers)}" if @display_headers
@@ -75,8 +77,10 @@ module Middleware
     end
 
     def log_failure(error)
-      message = error[:message] ? error[:message].fetch(:message, error[:message].to_s) : '<NO RESPONSE>'
-      logger.info yellow("  Failing with #{error[:status]} (#{message})")
+      message = error[:message]&.fetch(:message, error[:message].to_s)
+      message ||= '<NO RESPONSE>'
+
+      logger.info magenta("  ! Failing with #{error[:status]} (#{message})")
 
       error[:headers] ||= {}
       log_response(error[:status], error[:headers])
