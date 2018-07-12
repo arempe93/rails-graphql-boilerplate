@@ -1,0 +1,17 @@
+development: &default
+  algorithm: HS256
+  expiration: <%= 1.month %>
+  issuer: YOURAPP
+
+test:
+  <<: *default
+
+qa:
+  <<: *default
+
+staging:
+  <<: *default
+
+production:
+  <<: *default
+  expiration: <%= 1.week %>
