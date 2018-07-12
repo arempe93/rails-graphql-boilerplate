@@ -10,10 +10,7 @@ module AuthenticationService
   end
 
   def tokenize(user)
-    token = SecureToken.new(sub: user.id,
-                            organization_id: user.organization_id,
-                            admin: user.admin?,
-                            owner: user.owner?)
+    token = SecureToken.new(sub: user.id)
 
     add_to_whitelist(token)
 
