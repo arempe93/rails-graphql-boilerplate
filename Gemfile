@@ -43,6 +43,9 @@ group :development, :test do
   gem 'rspec'
   gem 'rack-test'
 
+  # Environment bootstrap
+  gem 'dotenv-rails'
+
   # Spring
   gem 'spring'
 
