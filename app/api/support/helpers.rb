@@ -8,12 +8,10 @@ module API
                          include_missing: include_missing)
       end
 
-      def find(collection, query, code = nil)
-        collection.find_by(query).tap do |model|
-          break model if model
-
+      def find(collection, query)
+        collection.find_by(query).tap do |m|
           class_name = collection.respond_to?(:model) ? collection.model.name : collection
-          not_found!(*["#{class_name} with query '#{query}' was not found", code].compact)
+          not_found! "#{class_name} with query '#{query}' was not found" unless m
         end
       end
 
