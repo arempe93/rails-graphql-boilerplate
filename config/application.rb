@@ -11,6 +11,11 @@ require_relative '../lib/grape_filter_logger'
 
 module YourApplication
   class Application < Rails::Application
+    # Disable automatic test generation
+    config.generators do |g|
+      g.test_framework = nil
+    end
+
     # Disable rails rack logging in grape endpoints
     config.middleware.swap Rails::Rack::Logger, GrapeFilterLogger
 
