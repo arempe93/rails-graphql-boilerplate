@@ -26,14 +26,8 @@ module YourApplication
     config.autoload_paths << "#{config.root}/lib"
 
     # Custom logger
-    def build_logger(path:)
-      logger = Logger.new(path)
-      logger.formatter = TaggedTimestampLogger
-      ActiveSupport::TaggedLogging.new(logger)
-    end
-
     Dir.mkdir('log') unless File.directory?('log')
 
-    config.logger = build_logger(path: "log/#{Rails.env}.log")
+    config.logger = TaggedTimestampLogger.new("log/#{Rails.env}.log")
   end
 end
