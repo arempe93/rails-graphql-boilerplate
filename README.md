@@ -3,24 +3,56 @@ Rails Grape Jumpstart
 
 A basic starting point for [Grape APIs](https://github.com/ruby-grape/grape) running on Rails.
 
+## Installation
+
+#### 1. Clone the boilerplate
+
+```
+git clone --depth=1 git@github.com:arempe93/grape-rails-boilerplate.git myproject
+cd myproject
+
+git commit --amend -m "initial boilerplate commit"
+git remote remove origin
+```
+
+#### 2. Change application configs
+
+TODO comments have been placed where changes need to be made
+
+```
+rake notes
+```
+
+#### 3. Setup local environment
+
+```
+rake setup
+```
+
 ## Features
 
 Goodies included besides setting up the inital Grape mounting
+
+#### Request ID Middleware
+
+Includes an `X-Request-ID` header to each response
 
 #### Logging Middleware
 
 Includes custom middleware to log every request in the following format
 
 ```
-[req_d76f6278]
-[req_d76f6278] Started GET '/api/example' at 2017-11-27 22:27:50 -0500
-[req_d76f6278] Processing by API::Example/example
-[req_d76f6278]   Parameters: {}
-[req_d76f6278] Completed 200: total=2.33ms - db=0.0ms
-[req_d76f6278]
+[EjBHdKe1BK4XW7Hg]
+[EjBHdKe1BK4XW7Hg] Started GET '/api/example'
+[EjBHdKe1BK4XW7Hg] Processing by API::Example/example
+[EjBHdKe1BK4XW7Hg]   Parameters: {}
+[EjBHdKe1BK4XW7Hg] Completed 200: total=2.33ms - db=0.0ms
+[EjBHdKe1BK4XW7Hg]
 ```
 
-`req_d76f6278` is a request id that is helpful when `grep`-ing
+_`EjBHdKe1BK4XW7Hg` is the id of the request_
+
+Adds `X-Runtime` and `X-DB-Runtime` to each response
 
 #### Error Handling
 
@@ -114,22 +146,6 @@ end
 
 I find the [global](https://github.com/railsware/global) gem helpful for storing environment specific application configurations
 
-## What you need to do
+### Helpers
 
-#### Configure Database
-
-Configure the database by adding a database gem and editing the `config/database.yml` file.
-
-#### Rename Rails module
-
-Rename the Rails application module in `config/application.rb` and `config/routes.rb` from `YourApplication` to something more relevant. Also remember to change this in `config/initializers/session_store.rb` if you plan to use cookies.
-
-#### Optional Trick
-
-Another trick you might find helpful is to use `--depth=1` when cloning this repo, to ignore most of the history. Then you are free to rename the first commit whatever you want
-
-```
-git clone --depth=1 git@github.com:arempe93/grape-rails-boilerplate.git myproject
-cd myproject
-git commit --amend -m "Initial commit or whatever"
-```
+Plenty of helpers in `app/api/support`
