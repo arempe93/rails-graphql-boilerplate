@@ -1,14 +1,10 @@
 if Rails.env.development?
-  api_dir = "#{Rails.root}/app/api"
-  file_ext = 'rb'
+  ActiveSupport::Dependencies.explicitly_unloadable_constants << 'API::Base'
 
-  api_files = Dir["#{api_dir}/**/*.#{file_ext}"]
-
-  api_reloader = ActiveSupport::FileUpdateChecker.new(api_files, api_dir => file_ext) do
-    Rails.logger.info 'Reload routes for changed api files'
+  api_files = Dir[Rails.root.join('app', 'api', '**', '*.rb')]
+  api_reloader = ActiveSupport::FileUpdateChecker.new(api_files) do
     Rails.application.reload_routes!
   end
-
   ActiveSupport::Reloader.to_prepare do
     api_reloader.execute_if_updated
   end
