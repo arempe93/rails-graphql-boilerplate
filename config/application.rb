@@ -17,13 +17,13 @@ module YourApplication
     # Load Grape API and enumerations
     config.paths.add 'app/api', glob: '**/*.rb'
     config.paths.add 'app/enums', glob: '**/*.rb'
-    config.autoload_paths << "#{config.root}/app"
+    config.eager_load_paths << "#{config.root}/app"
 
     # Load STI folders
-    config.autoload_paths += Dir[Rails.root.join('app', 'models', '**/')]
+    config.eager_load_paths += Dir[Rails.root.join('app', 'models', '**/')]
 
     # Load lib
-    config.autoload_paths << "#{config.root}/lib"
+    config.eager_load_paths << "#{config.root}/lib"
 
     # Custom logger
     Dir.mkdir('log') unless File.directory?('log')
