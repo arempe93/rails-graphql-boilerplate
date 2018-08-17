@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+# load extra helpers that aren't autoloaded
+%w[validators].each do |dir|
+  Dir[File.dirname(__FILE__) + "/#{dir}/*.rb"].each { |file| require file }
+end
+
 module API
   class Base < Grape::API
     use Grape::Middleware::Globals
