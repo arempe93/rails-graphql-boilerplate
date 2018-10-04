@@ -4,4 +4,6 @@ YourApplication::Application.routes.draw do
 
   mount GrapeSwaggerRails::Engine => '/docs'
   mount Sidekiq::Web => '/sidekiq'
+
+  post '/graphql', to: 'graphql#execute'
 end

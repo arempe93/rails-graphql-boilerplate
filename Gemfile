@@ -18,7 +18,6 @@ gem 'grape-swagger-rails'
 gem 'grape-swagger-entity'
 
 # Graphql
-
 gem 'graphql'
 gem 'graphql-batch'
 gem 'graphql-guard'
