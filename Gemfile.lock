@@ -98,6 +98,12 @@ GEM
       grape-swagger (>= 0.20.4)
     grape-swagger-rails (0.3.0)
       railties (>= 3.2.12)
+    graphql (1.8.10)
+    graphql-batch (0.3.10)
+      graphql (>= 0.8, < 2)
+      promise.rb (~> 0.7.2)
+    graphql-guard (1.2.0)
+      graphql (>= 1.6.0, < 2)
     i18n (1.1.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
@@ -127,6 +133,7 @@ GEM
     parser (2.5.1.0)
       ast (~> 2.4.0)
     powerpack (0.1.2)
+    promise.rb (0.7.4)
     rack (2.0.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -236,6 +243,9 @@ DEPENDENCIES
   grape-swagger
   grape-swagger-entity
   grape-swagger-rails
+  graphql
+  graphql-batch
+  graphql-guard
   jwt
   mysql2 (~> 0.5)
   rack-cors
