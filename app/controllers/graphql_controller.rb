@@ -9,11 +9,13 @@ class GraphqlController < ApplicationController
              end
 
     render json: result
+  rescue GraphQL::Guard::NotAuthorizedError => error
+    render_error(message: 'Not Authorized', source: error.message, status: 401)
   rescue StandardError => error
     Rails.logger.error error.message
     Rails.logger.error error.backtrace.join("\n")
 
-    render_error(error)
+    render_error(message: error.message, source: error.backtrace.first)
   end
 
   private
@@ -29,11 +31,11 @@ class GraphqlController < ApplicationController
     }
   end
 
-  def render_error(error)
+  def render_error(message:, source:, status: 500)
     payload = {
-      error: { message: error.message, source: error.backtrace.first }
+      error: { message: message, source: source }
     }
 
-    render json: payload, status: 500
+    render json: payload, status: status
   end
 end

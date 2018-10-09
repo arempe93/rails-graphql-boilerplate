@@ -10,11 +10,9 @@ module AuthenticationService
   end
 
   def tokenize(user)
-    token = SecureToken.new(sub: user.id)
-
-    add_to_whitelist(token)
-
-    token.to_s
+    SecureToken.new(sub: user.id).tap do |token|
+      add_to_whitelist(token)
+    end
   end
 
   def verify(jwt)
