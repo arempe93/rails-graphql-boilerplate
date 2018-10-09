@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GraphqlController < ApplicationController
+  wrap_parameters false
+
   def execute
     result = if params[:_json]
                GraphqlService.multiplex(params[:_json], context: context)
