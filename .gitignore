@@ -7,3 +7,4 @@
 
 # Ignore local environment files.
 *.env
+.env.test
