@@ -2,51 +2,34 @@
 
 module Mutations
   class BaseMutation < GraphQL::Schema::Mutation
-    alias query_context context
-    alias ctx context
+    include Finders
 
-    class_attribute :data_key
-    class_attribute :data_entity
+    protected
 
-    field :errors, [Types::ErrorType], null: false
-
-    class << self
-      def data(key, type, null: true, **kwargs, &block)
-        self.data_key = key
-        field(key, type, null: null, **kwargs, &block)
-      end
-
-      def entity(entity_class)
-        self.data_entity = entity_class
-      end
+    def push_event(action:, subjects:, data: nil)
+      EventService.push(action: action,
+                        device_id: context[:device_id],
+                        user_id: context[:user_id],
+                        request_id: context[:request][:id],
+                        jti: context[:token]&.jti,
+                        subjects: subjects,
+                        data: data)
     end
 
-    def entity(object)
-      if self.class.data_entity
-        self.class.data_entity.wrap(object, query_context)
-      else
-        object
-      end
+    def with_void_return
+      nil.tap { yield }
     end
 
-    def error!(klazz, *args)
-      error = klazz.new(name, *args)
-      raise error
+    def error!(**kwargs)
+      raise Errors::BaseError.new(**kwargs)
     end
 
-    def name
-      self.class.graphql_name.camelize :lower
+    def forbidden!(msg = 'Not allowed to access this resource')
+      error! message: msg, code: :FORBIDDEN
     end
 
-    def resolve(**kwargs)
-      { errors: [] }.tap do |response|
-        value = mutate(**kwargs)
-        response[self.class.data_key] = entity(value) if self.class.data_key
-      end
-    rescue Errors::BaseError => e
-      { errors: [e] }.tap do |response|
-        response[self.class.data_key] = nil
-      end
+    def unauthorized!(msg = 'Authentication required')
+      error! message: msg, code: :UNAUTHORIZED
     end
   end
 end

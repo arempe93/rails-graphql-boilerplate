@@ -3,27 +3,27 @@
 module Entities
   class BaseEntity
     class << self
-      def wrap(object, ctx)
+      def wrap(object, context)
         return nil if object.nil?
         return object if object.is_a?(self)
 
-        if object.respond_to?(:then)
-          object.then { |o| wrap(o, ctx) }
+        if object.is_a?(Promise)
+          object.then { |o| wrap(o, context) }
         elsif object.respond_to?(:map)
-          object.map { |o| wrap(o, ctx) }
+          object.map { |o| wrap(o, context) }
         else
-          new(object, ctx)
+          new(object, context)
         end
       end
     end
 
-    attr_reader :object, :query_context
+    attr_reader :object, :context
 
     delegate_missing_to :object
 
-    def initialize(object, query_context)
+    def initialize(object, context)
       @object = object
-      @query_context = query_context
+      @context = context
     end
 
     def id

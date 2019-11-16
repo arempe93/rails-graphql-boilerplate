@@ -2,6 +2,6 @@
 
 module Types
   class BaseObject < GraphQL::Schema::Object
-    alias ctx context
+    include Finders
   end
 end
