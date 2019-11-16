@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GraphqlService
+module GraphQLService
   module_function
 
   def execute(query, context:)

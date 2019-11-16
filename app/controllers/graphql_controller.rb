@@ -1,43 +1,53 @@
 # frozen_string_literal: true
 
-class GraphqlController < ApplicationController
-  wrap_parameters false
+class GraphQLController < ApplicationController
+  skip_before_action :verify_authenticity_token
+  before_action :verify_token
 
   def execute
     result = if params[:_json]
-               GraphqlService.multiplex(params[:_json], context: context)
+               GraphQLService.multiplex(params[:_json], context: context)
              else
-               GraphqlService.execute(params, context: context)
+               GraphQLService.execute(params, context: context)
              end
 
     render json: result
-  rescue GraphQL::Guard::NotAuthorizedError => error
-    render_error(message: 'Not Authorized', source: error.message, status: 401)
-  rescue StandardError => error
-    Rails.logger.error error.message
-    Rails.logger.error error.backtrace.join("\n")
+  rescue GraphQL::Guard::NotAuthorizedError => e
+    render_graphql_error(e, code: 'UNAUTHORIZED', status: 401)
+  rescue StandardError => e
+    Rails.logger.error e.message
+    Rails.logger.error e.backtrace.join("\n")
 
-    render_error(message: error.message, source: error.backtrace.first)
+    render_graphql_error(e)
   end
 
   private
 
   def context
-    raw_token = auth_header
-    token = AuthenticationService.verify(raw_token)
-
     {
-      raw_token: raw_token,
-      token: token,
-      user_id: token&.fetch(:sub, nil)
+      authenticated: RequestStore[:user_id].present?,
+      device: RequestStore[:device],
+      device_id: RequestStore[:device_id],
+      request: {
+        app_version: app_version,
+        id: RequestStore[:request_id],
+        ip: ip,
+        platform: platform,
+        token: RequestStore[:request_token]
+      },
+      token: RequestStore[:token],
+      user_id: RequestStore[:user_id]
     }
   end
 
-  def render_error(message:, source:, status: 500)
+  def render_graphql_error(error, code: 'SERVER_ERROR', status: 500)
     payload = {
-      error: { message: message, source: source }
+      message: error.message,
+      locations: [{ line: 1, column: 1 }],
+      path: [],
+      extension: { code: code }
     }
 
-    render json: payload, status: status
+    render json: { errors: [payload] }, status: status
   end
 end
