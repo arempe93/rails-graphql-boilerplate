@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+module Types
+  class <%= class_name %>Type < BaseObject
+    include Timestamps
+
+    description '<%= name.humanize %>'
+
+    <%- db_columns.each do |name, column| -%>
+    field :<%= name %>, <%= to_scalar(name, column[:type]) %>, null: <%= column[:null] %>
+    <%- end -%>
+    <%- if associations.present? -%>
+
+      <%- associations.each do |assoc| -%>
+    field :<%= assoc[:name] %>, <%= assoc[:type] %>, null: <%= assoc[:null] %>, preload: true do
+      entity Entities::<%= assoc[:entity] %>
+    end
+      <%- end -%>
+    <%- end -%>
+  end
+end
