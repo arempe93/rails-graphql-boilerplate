@@ -1,7 +1,7 @@
 Rails GraphQL Launchpad
 ===
 
-A starting point for GraphQL endpoints running on rails, powered by [graphql-ruby](https://github.com/rmosolgo/graphql-ruby).
+A starting point for GraphQL endpoints running on Rails, powered by [graphql-ruby](https://github.com/rmosolgo/graphql-ruby).
 
 ## Installation
 
@@ -42,7 +42,7 @@ _For more information, see this [blog post](https://blog.apollographql.com/batch
 
 ### GraphQL Preload
 
-A library that leverages the [graphql-batch](https://github.com/Shopify/graphql-batch) gem by Shopify to simplify Rails association preloading.
+A field extension that leverages the [graphql-batch](https://github.com/Shopify/graphql-batch) gem by Shopify to simplify Rails association preloading.
 
 Associations are batched and loaded with [`ActiveRecord::Associations::Preloader`](https://www.rubydoc.info/docs/rails/ActiveRecord/Associations/Preloader)
 
@@ -70,7 +70,7 @@ end
 **Scoped example**
 ```ruby
 class CourseType < BaseObject
-  field :grades, [GradeType], null: false
+  field :grades, [GradeType], null: false do
     preload assignments: :grade
     # can alternatively provide a Proc that is given the following keywords:
     # - object: the object represented by the type (eg: the model or entity)
@@ -89,7 +89,7 @@ _For more information about preloading and preload scopes please see the [Rails 
 
 ### GraphQL Entity
 
-A library that allows you to define entity wrappers for fields. This allows you to separate graphql-specific logic from your model classes.
+A field extension that allows you to define entity wrappers for fields. This allows you to separate graphql-specific logic from your model classes.
 
 ```ruby
 class UserType < BaseObject
@@ -102,7 +102,7 @@ end
 
 ### GraphQL Authorize
 
-A library that allows you to specify authorization logic on a per-field basis.
+A field extension that allows you to specify authorization logic on a per-field basis.
 
 ```ruby
 module Policies
