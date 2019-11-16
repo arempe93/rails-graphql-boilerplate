@@ -1,14 +1,34 @@
 # frozen_string_literal: true
 
-module GraphqlPreload
+module GraphQLPreload
   GraphQL::Schema::Field.prepend FieldMetadata
 
-  def self.use(schema_defn)
-    schema_defn.instrument(:field, Instrument.new)
+  class << self
+    def use(schema_defn)
+      schema = schema_defn.target
+      return unless schema.query
+
+      schema.query.fields.each { |_, f| add_extension(f) }
+    end
+
+    private
+
+    def add_extension(field_defn, visited: {})
+      preload = field_defn.metadata[:preload]
+      scope = field_defn.metadata[:preload_scope]
+      field = field_defn.metadata[:type_class]
+
+      type = field.type
+      type = type.of_type while type.is_a?(GraphQL::Schema::Wrapper)
+
+      return if visited[type]
+      return unless type < GraphQL::Schema::Object
+
+      visited[type] = true
+
+      field.extension(FieldExtension, preload: preload, scope: scope) if preload.present?
+
+      type.fields.each { |_, f| add_extension(f.to_graphql, visited: visited) }
+    end
   end
 end
-
-require_relative 'graphql_preload/entity_loader'
-require_relative 'graphql_preload/field_metadata'
-require_relative 'graphql_preload/instrument'
-require_relative 'graphql_preload/record_loader'

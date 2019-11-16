@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GraphqlPreload
+module GraphQLPreload
   class BaseLoader < GraphQL::Batch::Loader
     attr_accessor :scope
     attr_reader :association, :target_class
@@ -21,6 +21,7 @@ module GraphqlPreload
       type_check!(target)
 
       return Promise.resolve(read_association(target)) if association_loaded?(target)
+
       super
     end
 
@@ -33,11 +34,13 @@ module GraphqlPreload
 
     def preload_scope
       return unless @scope
+
       @scope
     end
 
     def type_check!(object)
       return if object.is_a?(@target_class)
+
       raise TypeError, "Loader for #{@target_class} cannot load for #{object.class} objects"
     end
   end

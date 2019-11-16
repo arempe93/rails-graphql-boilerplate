@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GraphQLEntity
+module GraphQLAuthorize
   GraphQL::Schema::Field.prepend FieldMetadata
 
   class << self
@@ -14,18 +14,18 @@ module GraphQLEntity
     private
 
     def add_extension(field_defn, visited: {})
-      entity = field_defn.metadata[:entity]
+      authorize = field_defn.metadata[:authorize]
       field = field_defn.metadata[:type_class]
 
       type = field.type
       type = type.of_type while type.is_a?(GraphQL::Schema::Wrapper)
 
       return if visited[type]
-      return unless type < GraphQL::Schema::Object
 
       visited[type] = true
 
-      field.extension(FieldExtension, entity: entity) if entity.present?
+      field.extension(FieldExtension, authorize: authorize) if authorize.present?
+      return unless type < GraphQL::Schema::Object
 
       type.fields.each { |_, f| add_extension(f.to_graphql, visited: visited) }
     end

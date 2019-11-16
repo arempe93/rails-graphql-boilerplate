@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GraphqlPreload
+module GraphQLPreload
   module FieldMetadata
     def initialize(preload: nil, preload_scope: nil, **kwargs, &block)
       @raw_name = kwargs[:name].to_sym

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GraphqlPreload
+module GraphQLPreload
   class RecordLoader < BaseLoader
     private
 

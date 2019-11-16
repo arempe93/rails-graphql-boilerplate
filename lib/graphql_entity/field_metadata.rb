@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module GraphqlEntity
+module GraphQLEntity
   module FieldMetadata
     def initialize(entity: nil, **kwargs, &block)
       @entity = entity

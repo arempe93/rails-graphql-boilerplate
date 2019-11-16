@@ -1,23 +1,17 @@
 # frozen_string_literal: true
 
-module GraphqlPreload
-  class Instrument
-    def instrument(_type, field)
-      return field unless field.metadata[:preload].present?
+module GraphQLPreload
+  class FieldExtension < GraphQL::Schema::FieldExtension
+    def resolve(object:, arguments:, context:)
+      associations = options[:preload]
+      scope = options[:scope]
+      parent = object.object
 
-      prev_resolver = field.resolve_proc
-      next_resolver = ->(obj, args, ctx) do
-        return prev_resolver.call(obj, args, ctx) unless obj
+      scope = resolve_scope(scope, parent, arguments, context) if scope
 
-        preload_scope = field.metadata[:preload_scope]
-        scope = resolve_scope(preload_scope, obj, args, ctx) if preload_scope
-
-        preload(obj.object, field.metadata[:preload], scope).then do
-          prev_resolver.call(obj, args, ctx)
-        end
+      preload(parent, associations, scope).then do
+        yield(object, arguments)
       end
-
-      field.redefine { resolve(next_resolver) }
     end
 
     private
@@ -70,14 +64,14 @@ module GraphqlPreload
       loader.load(object)
     end
 
-    def resolve_scope(preload_scope, obj, args, ctx)
+    def resolve_scope(preload_scope, parent, arguments, context)
       if preload_scope.respond_to?(:call)
-        preload_scope.call(obj.object, args, ctx)
+        preload_scope.call(parent: parent, arguments: arguments, context: context)
       else
         kwargs = args.to_h.transform_keys { |k| k.underscore.to_sym }
-        return obj.object.public_send(preload_scope.to_sym) if kwargs.empty?
+        return object.public_send(preload_scope.to_sym) if kwargs.empty?
 
-        obj.object.public_send(preload_scope.to_sym, **kwargs)
+        object.public_send(preload_scope.to_sym, **kwargs)
       end
     end
 
