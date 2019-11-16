@@ -1,151 +1,192 @@
-Rails Grape Jumpstart
-=====================
+Rails GraphQL Launchpad
+===
 
-A basic starting point for [Grape APIs](https://github.com/ruby-grape/grape) running on Rails.
+A starting point for GraphQL endpoints running on rails, powered by [graphql-ruby](https://github.com/rmosolgo/graphql-ruby).
 
 ## Installation
 
-#### 1. Clone the boilerplate
+1. Clone the boilerplate (or use Github template)
 
-```
-git clone --depth=1 git@github.com:arempe93/grape-rails-boilerplate.git myproject
-cd myproject
+    ```sh
+    git clone git@github.com:arempe93/rails-graphql-boilerplate.git myproject
+    ```
+2. Change application configs
 
-git commit --amend -m "initial boilerplate commit"
-git remote remove origin
-```
+    TODO comments have been placed where changes need to be made. View them easily with
 
-#### 2. Change application configs
+    ```sh
+    rake notes
+    ```
 
-TODO comments have been placed where changes need to be made
+3. Setup local environment
 
-```
-rake notes
-```
+    ```sh
+    rake setup
+    ```
 
-#### 3. Setup local environment
-
-```
-rake setup
-```
+That's all!
 
 ## Features
 
-Goodies included besides setting up the inital Grape mounting
+### GraphiQL IDE
 
-#### Request ID Middleware
+Makes use of [graphiql-rails](https://github.com/rmosolgo/graphiql-rails) to give you a GraphQL IDE mounted at `/graphql`
 
-Includes an `X-Request-ID` header to each response
+![graphiql](https://cloud.githubusercontent.com/assets/2231765/12101544/4779ed54-b303-11e5-918e-9f3d3e283170.png)
 
-#### Logging Middleware
+### Apollo Query Batching Support
 
-Includes custom middleware to log every request in the following format
+Supports Apollo query batching (and all query batching using the `_json` method) out of the box.
 
-```
-[EjBHdKe1BK4XW7Hg]
-[EjBHdKe1BK4XW7Hg] Started GET '/api/example'
-[EjBHdKe1BK4XW7Hg] Processing by API::Example/example
-[EjBHdKe1BK4XW7Hg]   Parameters: {}
-[EjBHdKe1BK4XW7Hg] Completed 200: total=2.33ms - db=0.0ms
-[EjBHdKe1BK4XW7Hg]
-```
+_For more information, see this [blog post](https://blog.apollographql.com/batching-client-graphql-queries-a685f5bcd41b)_
 
-_`EjBHdKe1BK4XW7Hg` is the id of the request_
+### GraphQL Preload
 
-Adds `X-Runtime` and `X-DB-Runtime` to each response
+A library that leverages the [graphql-batch](https://github.com/Shopify/graphql-batch) gem by Shopify to simplify Rails association preloading.
 
-#### Error Handling
+Associations are batched and loaded with [`ActiveRecord::Associations::Preloader`](https://www.rubydoc.info/docs/rails/ActiveRecord/Associations/Preloader)
 
-Normally, whenever your api has an uncaught error, Rails will take over and serve up a 500 with the standard template it uses based on the environment. This can be problematic because it provides clients expecting JSON no indication of what the error might be and it also, depending on your setup, could not be included in the Grape CORS policy. This can cause clients to give unhelpful error messages for the request.
-
-The standard response the middleware will return for any uncaught exception is as follows
-
-```javascript
-{
-  "message": "Something bad has happened",
-  "source": "/path/to/file:100"
-}
+**Simple example**
+```ruby
+class UserType < BaseObject
+  # assuming User => has_many :devices
+  field :devices, [DeviceType], null: false, preload: true
+end
 ```
 
-This format is entirely confiugrable in `app/api/base.rb`.
+**Nested example**
+```ruby
+class CourseType < BaseObject
+  # assuming
+  # - Course => has_many :course_students
+  # - CourseStudents => has_many :students
+  field :students, [StudentType], null: false do
+    # preload and preload_scope can also be called as methods here
+    preload course_students: :students
+  end
+end
+```
 
-#### 404 Handling
+**Scoped example**
+```ruby
+class CourseType < BaseObject
+  field :grades, [GradeType], null: false
+    preload assignments: :grade
+    # can alternatively provide a Proc that is given the following keywords:
+    # - object: the object represented by the type (eg: the model or entity)
+    # - arguments: the arguments given to the field
+    # - context: the graphql context
+    preload_scope :grade_preload_scope
+  end
 
-Handles 404 as well, instead of letting Rails take over with a `RoutingError`. This also avoids some of the problems described above. This can be configured in `app/api/base.rb`
+  def grade_preload_scope
+    Grade.where(student_id: context[:current_student_id])
+  end
+end
+```
 
-#### API Reloading
+_For more information about preloading and preload scopes please see the [Rails documentation](https://www.rubydoc.info/docs/rails/ActiveRecord/Associations/Preloader)._
 
-Automatically reloads changes to Grape API files in development. Thanks to the [Grape README](https://github.com/ruby-grape/grape#reloading-api-changes-in-development).
+### GraphQL Entity
 
-#### Swagger API Documentation
-
-Comes bundled with [Swagger](http://swagger.io/) for API documentation through the help of [grape-swagger](https://github.com/ruby-grape/grape-swagger) and [grape-swagger-rails](https://github.com/ruby-grape/grape-swagger-rails). You can configure the documentation title and options in `config/initializers/swagger.rb`
-
-#### Route Printing
-
-Run `rake grape:routes` to print all routes for the application, similar to `rake routes` in plain Rails
-
-#### CORS Configuration
-
-Adds CORS configuration on `/api/` in `config/initializers/cors.rb` using `Rack::CORS`. The default is any origin, any method.
-
-#### API Error Helpers
-
-Gives aliases to Grape's `error!` method, for readability. For example, compare writing this
+A library that allows you to define entity wrappers for fields. This allows you to separate graphql-specific logic from your model classes.
 
 ```ruby
-error!({ code: '404.12', message: 'User was not found' }, 404)
+class UserType < BaseObject
+  field :devices, [DeviceType], null: false, preload: true do
+    # this will call Entities::DeviceEntity.wrap on the return value of the field and replace it
+    entity Entities::DeviceEntity
+  end
+end
 ```
 
-to writing something a little more quickly understandable
+### GraphQL Authorize
+
+A library that allows you to specify authorization logic on a per-field basis.
 
 ```ruby
-not_found! message: 'User was not found', code: '404.12'
+module Policies
+  # falsey values will raise an execution error
+  # authorization procs are provided the following keywords
+  # - object: the raw graphql object
+  # - arguments: the field arguments
+  # - context: the graphql context
+  # - field: the field instance itself
+  ATTENDS_COURSE = ->(object:, context:, **) { Course.find(object.object.id).attending?(context[:user_id]) }
+end
+
+class CourseType < BaseObject
+  field :syllabus, SyllabusType, null: false do
+    authorize Policies::ATTENDS_COURSE
+  end
+end
 ```
 
-#### Automatic Model Annotation
+### GraphQL Type Generator
 
-Makes use of the [annotate](https://github.com/ctran/annotate_models) gem to give helpful schema annotation comments above your Rails models automatically, whenever `rake db:migrate` is run
+Includes a Rails generator for creating a GraphQL type and entity file for an Active Record model.
+
+```sh
+rails g type User
+```
+
+_Outputs:_
+
+```ruby
+# app/graphql/types/user_type.rb
+module Types
+  class UserType < BaseObject
+    include Timestamps
+
+    # includes all database columns as fields
+    field :id, ID, null: false
+    field :email, String, null: false
+    field :first_name, String, null: false
+    field :last_name, String, null: false
+
+    # even generates association fields!
+    # it's only based on the name however so make sure the type exists
+    field :devices, [DeviceType], null: false, preload: true do
+      entity Entities::DeviceEntity
+    end
+  end
+end
+
+# app/graphql/entities/user_entity.rb
+module Entities
+  class UserEntity < BaseEntity
+  end
+end
+```
+
+### Automatic Model Annotation
 
 ```ruby
 # == Schema Information
 #
-# Table name: messages
+# Table name: users
 #
-#  id            :integer          not null, primary key
-#  user_id       :integer
-#  feed_id       :integer
-#  feed_sequence :integer
-#  message_type  :integer
-#  payload       :string
-#  options       :hstore
-#  sent_at       :datetime
+#  id                   :bigint           not null, primary key
+#  email                :string(255)      not null
+#  first_name           :string(128)      not null
+#  last_name            :string(128)      not null
+#  role                 :string(32)
+#  phone_number         :string(32)
+#  hashed_password      :string(64)
+#  password_reset_token :string(64)
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
 #
 # Indexes
 #
-#  index_messages_on_feed_id  (feed_id)
-#  index_messages_on_user_id  (user_id)
+#  index_users_on_email  (email) UNIQUE
 #
-
 ```
 
-#### Enumeration Support
-
-An autoloaded directory `app/enums` has been included to support enums, specifically [EnumerateIt enums](https://github.com/cassiomarques/enumerate_it): the best gem I have found for Ruby/Rails enums.
-
-I find that enumerations and Grape APIs work very well together, especially for validation and entities.
-
-```ruby
-desc 'An enum validation example'
-params do
-  optional :foo_type, type: Integer, values: Enums::FooType.list
-end
-```
-
-#### Global Configuration
+### Global Configuration
 
 I find the [global](https://github.com/railsware/global) gem helpful for storing environment specific application configurations
 
-### Helpers
+### Local Environment Bootstap
 
-Plenty of helpers in `app/api/support`
+Uses [dotenv-rails](https://github.com/bkeepers/dotenv) to load `.env` and `.env.test` files in the "development" and "test" environments
