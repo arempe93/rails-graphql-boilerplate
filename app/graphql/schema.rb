@@ -12,14 +12,8 @@ class Schema < GraphQL::Schema
   use GraphQL::Execution::Interpreter
   use GraphQL::Analysis::AST
 
-  # add guard ability to fields
-  # use GraphQL::Guard.new #(policy_object: Policies::GraphQLPolicy)
-  use GraphQLAuthorize
-
-  # preload and wrap records
+  # use batching backend for graphql-preload
   use GraphQL::Batch
-  use GraphQLPreload
-  use GraphQLEntity
 
   # max_depth 10
 

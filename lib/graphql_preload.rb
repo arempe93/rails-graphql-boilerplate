@@ -1,34 +1,28 @@
 # frozen_string_literal: true
 
 module GraphQLPreload
-  GraphQL::Schema::Field.prepend FieldMetadata
+  def initialize(preload: nil, preload_scope: nil, **kwargs, &block)
+    super(**kwargs, &block)
 
-  class << self
-    def use(schema_defn)
-      schema = schema_defn.target
-      return unless schema.query
+    @preload ||= preload.is_a?(TrueClass) ? @original_name : preload
+    @preload_scope ||= preload_scope
+    return unless @preload || @preload_scope
 
-      schema.query.fields.each { |_, f| add_extension(f) }
-    end
+    extension(FieldExtension, preload: @preload, preload_scope: @preload_scope)
+  end
 
-    private
+  def preload(value)
+    @preload = value.is_a?(TrueClass) ? @original_name : value
+  end
 
-    def add_extension(field_defn, visited: {})
-      preload = field_defn.metadata[:preload]
-      scope = field_defn.metadata[:preload_scope]
-      field = field_defn.metadata[:type_class]
+  def preload_scope(value)
+    @preload_scope = value
+  end
 
-      type = field.type
-      type = type.of_type while type.is_a?(GraphQL::Schema::Wrapper)
-
-      return if visited[type]
-      return unless type < GraphQL::Schema::Object
-
-      visited[type] = true
-
-      field.extension(FieldExtension, preload: preload, scope: scope) if preload.present?
-
-      type.fields.each { |_, f| add_extension(f.to_graphql, visited: visited) }
+  def to_graphql
+    super.tap do |defn|
+      defn.metadata[:preload] = @preload
+      defn.metadata[:preload_scope] = @preload_scope
     end
   end
 end

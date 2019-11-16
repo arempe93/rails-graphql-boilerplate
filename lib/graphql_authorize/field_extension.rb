@@ -11,7 +11,7 @@ module GraphQLAuthorize
       return yield(object, arguments) if passed
 
       message = "Authorization failed for #{field.owner.graphql_name}.#{field.name}"
-      raise AuthorizationError.new(message, extensions: { code: 'AUTHORIZATION_FAILED' })
+      raise AuthorizationError.new(message, extensions: { code: :AUTHORIZATION_FAILED })
     end
   end
 end
