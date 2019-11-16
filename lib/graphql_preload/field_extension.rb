@@ -5,11 +5,11 @@ module GraphQLPreload
     def resolve(object:, arguments:, context:)
       associations = options[:preload]
       scope = options[:scope]
-      parent = object.object
+      target = object.object
 
-      scope = resolve_scope(scope, parent, arguments, context) if scope
+      scope = resolve_scope(scope, object, arguments, context) if scope
 
-      preload(parent, associations, scope).then do
+      preload(target, associations, scope).then do
         yield(object, arguments)
       end
     end
@@ -64,14 +64,13 @@ module GraphQLPreload
       loader.load(object)
     end
 
-    def resolve_scope(preload_scope, parent, arguments, context)
+    def resolve_scope(preload_scope, object, arguments, context)
       if preload_scope.respond_to?(:call)
-        preload_scope.call(object: parent, arguments: arguments, context: context)
+        preload_scope.call(object: object, arguments: arguments, context: context)
+      else if object.respond_to?(preload_scope.to_sym)
+        object.public_send(preload_scope.to_sym, **arguments)
       else
-        kwargs = args.to_h.transform_keys { |k| k.underscore.to_sym }
-        return parent.public_send(preload_scope.to_sym) if kwargs.empty?
-
-        parent.public_send(preload_scope.to_sym, **kwargs)
+        object.object.public_send(preload_scope.to_sym, **arguments)
       end
     end
 
