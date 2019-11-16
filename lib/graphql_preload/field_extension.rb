@@ -66,12 +66,12 @@ module GraphQLPreload
 
     def resolve_scope(preload_scope, parent, arguments, context)
       if preload_scope.respond_to?(:call)
-        preload_scope.call(parent: parent, arguments: arguments, context: context)
+        preload_scope.call(object: parent, arguments: arguments, context: context)
       else
         kwargs = args.to_h.transform_keys { |k| k.underscore.to_sym }
-        return object.public_send(preload_scope.to_sym) if kwargs.empty?
+        return parent.public_send(preload_scope.to_sym) if kwargs.empty?
 
-        object.public_send(preload_scope.to_sym, **kwargs)
+        parent.public_send(preload_scope.to_sym, **kwargs)
       end
     end
 
