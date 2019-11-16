@@ -4,20 +4,9 @@ class SecureToken
   SECRET = Rails.application.secrets.secret_key_base
 
   class << self
-    def decode!(jwt)
-      payload_section = jwt.split('.').second
-      JSON.parse(Base64.decode64(payload_section), symbolize_names: true)
-    end
-
-    def decode(jwt)
-      decode!(jwt)
-    rescue NoMethodError, JSON::ParserError
-      nil
-    end
-
     def validate!(token)
       payload, _header = JWT.decode(token, SECRET)
-      payload.deep_symbolize_keys
+      new(payload.deep_symbolize_keys)
     end
 
     def validate(token)
@@ -27,25 +16,31 @@ class SecureToken
     end
   end
 
-  attr_accessor :iss, :iat, :sub, :jti, :exp, :claims
-  attr_reader :encoded
+  attr_accessor :claims
 
   delegate :[], to: :claims
 
-  def initialize(sub:, exp: Global.jwt.expiration, **opts)
-    @iss = Global.jwt.issuer
-    @sub = sub
-    @jti = SecureRandom.base58
-    @exp = (Time.now + exp).to_i
-
+  def initialize(sub:, ttl: Global.auth.token_ttl, **opts)
     @claims = opts
-    @claims[:iss] = @iss
-    @claims[:sub] = @sub
-    @claims[:jti] = @jti
-    @claims[:exp] = @exp
+    @claims[:sub] = sub
+    @claims[:iss] ||= Global.auth.issuer
+    @claims[:jti] ||= SecureRandom.base58
+    @claims[:exp] ||= Time.now.to_i + ttl
+  end
+
+  def expired?
+    @claims[:exp] <= Time.now.to_i
+  end
+
+  def method_missing(name, *args, &block)
+    @claims.key?(name) ? @claims[name] : super
+  end
+
+  def respond_to_missing?(name, *args, &block)
+    @claims.key?(name) || super
   end
 
   def to_s
-    @to_s ||= JWT.encode(@claims, SECRET, Global.jwt.algorithm)
+    @to_s ||= JWT.encode(@claims, SECRET, Global.auth.jwt_alg)
   end
 end
