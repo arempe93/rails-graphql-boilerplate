@@ -10,6 +10,6 @@ namespace :precommit do
 
     File.open('./.git/hooks/pre-commit', 'w') { |f| f.write(precommit) }
 
-    puts "- Precommit hook installed"
+    puts '- Precommit hook installed'
   end
 end
