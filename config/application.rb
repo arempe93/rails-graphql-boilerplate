@@ -1,34 +1,53 @@
-require File.expand_path('../boot', __FILE__)
+require File.expand_path('boot', __dir__)
 
-require 'rails/all'
+# Manually require Rails engines as needed
+require 'rails'
+
+require 'active_model/railtie'
+# require 'active_job/railtie'
+require 'active_record/railtie'
+# require 'active_storage/engine'
+# require 'action_controller/railtie'
+# require 'action_mailer/railtie'
+# require 'action_view/railtie'
+# require 'action_cable/engine'
+require 'sprockets/railtie'
+# require 'rails/test_unit/railtie'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-require_relative '../lib/tagged_timestamp_logger'
+require_relative '../lib/tagged_timestamp_formatter'
 
-# TODO: change name to application name
+# TODO: rename to your application name
 module YourApplication
   class Application < Rails::Application
-    # Disable automatic test generation
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 6.0
+    # Rails.autoloaders.logger = method(:puts)
+
+    # Disable automatic test code generation
     config.generators do |g|
       g.test_framework = nil
     end
 
-    # Load Grape API and enumerations
-    config.paths.add 'app/enums', glob: '**/*.rb'
-    config.eager_load_paths << "#{config.root}/app"
+    # Disable belongs_to validation checks required by default
+    config.active_record.belongs_to_required_by_default = false
 
-    # Load STI folders
-    config.eager_load_paths += Dir[Rails.root.join('app', 'models', '**/')]
+    # Autoload lib/ directory
+    config.autoload_paths << "#{config.root}/lib"
 
-    # Load lib
-    config.eager_load_paths << "#{config.root}/lib"
+    # Log to STDOUT if flag set
+    log_output = ENV['RAILS_LOG_TO_STDOUT'] ? STDOUT : "log/#{Rails.env}.log"
 
-    # Custom logger
-    Dir.mkdir('log') unless File.directory?('log')
+    # Support tagged logging and timestamp coloring
+    logger = ActiveSupport::Logger.new(log_output)
+    logger.formatter = TaggedTimestampFormatter
 
-    config.logger = TaggedTimestampLogger.new("log/#{Rails.env}.log")
+    config.logger = ActiveSupport::TaggedLogging.new(logger)
+
+    # Set default log formatter for env overrides
+    config.log_formatter = TaggedTimestampFormatter
   end
 end
