@@ -13,11 +13,11 @@ module Spatial
       protected
 
       def to_double(binary)
-        binary.unpack(DOUBLE_PACKFLAG).first
+        binary.unpack1(DOUBLE_PACKFLAG)
       end
 
       def to_uint32(binary)
-        binary.unpack(UINT32_PACKFLAG).first
+        binary.unpack1(UINT32_PACKFLAG)
       end
 
       private

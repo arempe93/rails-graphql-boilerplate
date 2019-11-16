@@ -67,7 +67,7 @@ module GraphQLPreload
     def resolve_scope(preload_scope, object, arguments, context)
       if preload_scope.respond_to?(:call)
         preload_scope.call(object: object, arguments: arguments, context: context)
-      else if object.respond_to?(preload_scope.to_sym)
+      elsif object.respond_to?(preload_scope.to_sym)
         object.public_send(preload_scope.to_sym, **arguments)
       else
         object.object.public_send(preload_scope.to_sym, **arguments)

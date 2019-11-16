@@ -26,7 +26,7 @@ module Preprocessable
     def validate_attribute!(attr)
       valid = column_names.map(&:to_sym).include?(attr)
       raise "Invalid attribute: #{attr}" unless valid
-    rescue ActiveRecord::ActiveRecordError => e
+    rescue ActiveRecord::ActiveRecordError
       # NOTE: swallow error. this is most likely occurring because the database
       #   has not been created for this environment yet, or a migration is pending
       Rails.logger.error "Unable to check if #{attr} is valid for preprocessing"

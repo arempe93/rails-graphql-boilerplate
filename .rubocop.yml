@@ -1,9 +1,11 @@
+inherit_from: .rubocop_todo.yml
+
 AllCops:
-  TargetRubyVersion: 2.5.1
+  TargetRubyVersion: 2.6.2
   DisplayCopNames: true
   Include:
     - app/**/*
-    - lib/**/*
+    - lib/**/*.rb
   Exclude:
     - app/views/**/*
     - bin/**/*
@@ -22,12 +24,10 @@ Metrics/BlockLength:
 Metrics/ClassLength:
   Exclude:
     - app/api/**/*
+    - app/graphql/types/query_type.rb
 
 Metrics/LineLength:
   Max: 110
-
-Metrics/MethodLength:
-  Max: 15
 
 Metrics/ParameterLists:
   Enabled: false

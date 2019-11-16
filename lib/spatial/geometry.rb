@@ -3,7 +3,7 @@
 module Spatial
   class Geometry
     def to_hex
-      to_wkb.unpack('H*').first
+      to_wkb.unpack1('H*')
     end
   end
 end
