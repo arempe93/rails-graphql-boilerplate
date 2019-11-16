@@ -17,11 +17,3 @@ RSpec.shared_context 'integration', integration: true do
     Sidekiq::Testing.inline! { example.run }
   end
 end
-
-RSpec.shared_context 'api_support', support: true do
-  subject { Class.new(Grape::API) }
-
-  def app
-    subject
-  end
-end

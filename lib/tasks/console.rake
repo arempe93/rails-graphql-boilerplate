@@ -17,7 +17,7 @@ task :console do
 
   include Rack::Test::Methods
 
-  puts "Loading #{Rails.env} environment with Grape mounted..."
+  puts "Loading #{Rails.env} environment with app mounted..."
 
   ARGV.clear
   IRB.start

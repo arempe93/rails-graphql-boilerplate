@@ -7,7 +7,6 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 
 require_relative '../lib/tagged_timestamp_logger'
-require_relative '../lib/grape_filter_logger'
 
 # TODO: change name to application name
 module YourApplication
@@ -17,11 +16,7 @@ module YourApplication
       g.test_framework = nil
     end
 
-    # Disable rails rack logging in grape endpoints
-    config.middleware.swap Rails::Rack::Logger, GrapeFilterLogger
-
     # Load Grape API and enumerations
-    config.paths.add 'app/api', glob: '**/*.rb'
     config.paths.add 'app/enums', glob: '**/*.rb'
     config.eager_load_paths << "#{config.root}/app"
 

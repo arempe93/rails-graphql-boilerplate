@@ -3,20 +3,11 @@ source 'https://rubygems.org'
 
 gem 'rails', '= 6.0.0'
 
-# Grape API
-gem 'grape'
-gem 'grape-entity'
-
 # API Helpers
 gem 'request_store'
 
 # Rack CORS
 gem 'rack-cors', require: 'rack/cors'
-
-# Swagger API doc
-gem 'grape-swagger'
-gem 'grape-swagger-rails'
-gem 'grape-swagger-entity'
 
 # Graphql
 gem 'graphql'
