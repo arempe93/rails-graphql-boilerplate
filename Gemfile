@@ -1,6 +1,7 @@
+ruby '2.6.2'
 source 'https://rubygems.org'
 
-gem 'rails', '~> 5.2'
+gem 'rails', '= 6.0.0'
 
 # Grape API
 gem 'grape'
@@ -21,6 +22,7 @@ gem 'grape-swagger-entity'
 gem 'graphql'
 gem 'graphql-batch'
 gem 'graphql-guard'
+gem 'graphiql-rails'
 
 # Enums
 gem 'enumerate_it'
@@ -59,11 +61,14 @@ group :development, :test do
 
   # Seeding information
   gem 'faker'
+
+  # Autoloader filewatching
+  gem 'listen', '>= 3.0.5', '< 3.2'
 end
 
 group :test do
   # Model factories
-  gem 'factory_girl_rails', '= 4.8.0'
+  gem 'factory_bot'
 
   # Database transaction cleaning
   gem 'database_cleaner'
