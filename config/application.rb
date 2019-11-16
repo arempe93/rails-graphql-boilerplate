@@ -49,5 +49,8 @@ module YourApplication
 
     # Set default log formatter for env overrides
     config.log_formatter = TaggedTimestampFormatter
+
+    # Add request log tags
+    config.log_tags = %i[request_id]
   end
 end

@@ -1,4 +1,11 @@
-require_relative '../../lib/middleware/request_id'
+# frozen_string_literal: true
 
-Rails.application.config.middleware.delete ActionDispatch::RequestId
-Rails.application.config.middleware.insert_after RequestStore::Middleware, Middleware::RequestId
+module ActionDispatch
+  class RequestId
+    private
+
+    def internal_request_id
+      RequestStore[:request_id] ||= SecureRandom.base58
+    end
+  end
+end
