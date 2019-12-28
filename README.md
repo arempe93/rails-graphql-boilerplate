@@ -137,18 +137,30 @@ end
 
 #### Important notes
 
-1. When using chaining (`Policy#and` / `#or` methods), policies are executed in order and a failing condition does not end the process.
+1. When using chaining (`Policy#and` / `#or` methods), policies are executed in order, and follow the same "fail-fast" rules as `&&` and `||`.
 
     ```ruby
-      class Failure < GraphQLAuthorize::Policy
-        def call(**)
-          puts "Failure#call"
-          false
-        end
-      end
+      # assumming:
+      #   the Failure policy always returns false
+      #   the Success always always returns true
 
-      authorize Failure.new.and(Failure.new)
-      # STDOUT => "Failure.call" (x2)
+      # only Failure will be ran
+      #   logically: false && ? always == false
+      authorize Failure.new.and(Success.new)
+
+      # only Success will be ran
+      #   logically: true || ? always == true
+      authorize Success.new.or(Failure.new)
+
+      # only both Failures will be ran
+      #   logically: (false && ? && ?) || false == false
+      authorize Failure.new.and(Success.new, Success.new).or(Failure.new)
+
+      # with one small change...
+
+      # only the first Success will be ran
+      #   logically: (true && ? && ?) || ? always == true
+      authorize Success.new.and(Success.new, Success.new).or(Failure.new)
     ```
 
 2. Policies are just objects, so you can add extra data at initialization
