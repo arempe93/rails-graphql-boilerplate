@@ -5,11 +5,11 @@ require 'active_support/concern'
 module Authorization
   extend ActiveSupport::Concern
 
-  APP_VERSION_HEADER = 'X-App-Version'
-  AUTHORIZATION_HEADER = 'Authorization'
-  NEW_TOKEN_HEADER = 'X-Refreshed-Token'
-  PLATFORM_HEADER = 'X-Platform'
-  REFRESH_HEADER = 'X-Refresh'
+  APP_VERSION_HEADER = Global.headers.app_version
+  AUTHORIZATION_HEADER = Global.headers.authorization
+  NEW_TOKEN_HEADER = Global.headers.new_token
+  PLATFORM_HEADER = Global.headers.platform
+  REFRESH_HEADER = Global.headers.refresh_token
   UNKNOWN = '<unknown>'
 
   included do
