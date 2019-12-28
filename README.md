@@ -137,33 +137,58 @@ end
 
 #### Important notes
 
-1. When using chaining (`Policy#and` / `#or` methods), policies are executed in order, and follow the same "fail-fast" rules as `&&` and `||`.
+1. Use `Policy#and` and `Policy#or` to create complex logic conditions. This will be referred to as "chaining".
 
     ```ruby
-      # assumming:
-      #   the Failure policy always returns false
-      #   the Success always always returns true
+    # assuming:
+    #   A, B, C, ... are Policy classes
 
-      # only Failure will be ran
-      #   logically: false && ? always == false
-      authorize Failure.new.and(Success.new)
+    # a && b
+    A.new.and(B.new)
 
-      # only Success will be ran
-      #   logically: true || ? always == true
-      authorize Success.new.or(Failure.new)
+    # a || b
+    A.new.or(B.new)
 
-      # only both Failures will be ran
-      #   logically: (false && ? && ?) || false == false
-      authorize Failure.new.and(Success.new, Success.new).or(Failure.new)
+    # a && b && c
+    A.new.and(B.new, C.new)
 
-      # with one small change...
+    # (a && b) || c
+    A.new.and(B.new).or(C.new)
 
-      # only the first Success will be ran
-      #   logically: (true && ? && ?) || ? always == true
-      authorize Success.new.and(Success.new, Success.new).or(Failure.new)
+    # (a && b) || (c && d)
+    A.new.and(B.new).or(C.new.and(D.new))
+
+    # a || (b && c) || (d && e)
+    A.new.or(B.new.and(C.new), D.new.and(E.new))
     ```
 
-2. Policies are just objects, so you can add extra data at initialization
+2. Policy chaining follows the same "fail-fast" rules as `&&` and `||`.
+
+    ```ruby
+    # assumming:
+    #   the Failure policy always returns false
+    #   the Success always always returns true
+
+    # only Failure will be ran
+    #   logically: false && ? always == false
+    authorize Failure.new.and(Success.new)
+
+    # only Success will be ran
+    #   logically: true || ? always == true
+    authorize Success.new.or(Failure.new)
+
+    # only both Failures will be ran
+    #   logically: (false && ? && ?) || false == false
+    authorize Failure.new.and(Success.new, Success.new).or(Failure.new)
+
+    # with one small change...
+
+    # only the first Success will be ran
+    #   logically: (true && ? && ?) || ? always == true
+    authorize Success.new.and(Success.new, Success.new).or(Failure.new)
+    ```
+
+3. Policies are just objects, so you can add extra data at initialization
 
     ```ruby
     class PermissionLevel < GraphQLAuthorize::Policy
@@ -183,7 +208,7 @@ end
     end
     ```
 
-3. Similarily you can also freeze objects for efficiency and ease of use.
+4. Similarily you can also freeze objects for efficiency and ease of use.
 
     ```ruby
     # you can create pre-configured policies:
