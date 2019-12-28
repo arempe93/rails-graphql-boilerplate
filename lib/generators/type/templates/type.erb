@@ -12,9 +12,7 @@ module Types
     <%- if associations.present? -%>
 
       <%- associations.each do |assoc| -%>
-    field :<%= assoc[:name] %>, <%= assoc[:type] %>, null: <%= assoc[:null] %>, preload: true do
-      entity Entities::<%= assoc[:entity] %>
-    end
+    field :<%= assoc[:name] %>, <%= assoc[:type] %>, null: <%= assoc[:null] %>, preload: true
       <%- end -%>
     <%- end -%>
   end

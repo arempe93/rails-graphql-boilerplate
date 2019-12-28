@@ -226,7 +226,7 @@ end
 
 ### GraphQL Type Generator
 
-Includes a Rails generator for creating a GraphQL type and entity file for an Active Record model.
+Includes a Rails generator for creating a GraphQL type file for an Active Record model.
 
 ```sh
 rails g type User
@@ -248,15 +248,7 @@ module Types
 
     # even generates association fields!
     # it's only based on the name however so make sure the type exists
-    field :devices, [DeviceType], null: false, preload: true do
-      entity Entities::DeviceEntity
-    end
-  end
-end
-
-# app/graphql/entities/user_entity.rb
-module Entities
-  class UserEntity < BaseEntity
+    field :devices, [DeviceType], null: false, preload: true
   end
 end
 ```

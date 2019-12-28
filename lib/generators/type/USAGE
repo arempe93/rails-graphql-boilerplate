@@ -1,5 +1,5 @@
 Description:
-    Generate GraphQL type and entity for given model
+    Generate GraphQL type for given model
 
 Example:
     rails generate graphql Model

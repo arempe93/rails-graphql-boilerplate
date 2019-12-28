@@ -16,7 +16,6 @@ class TypeGenerator < Rails::Generators::NamedBase
         list = assoc.is_a?(ActiveRecord::Reflection::HasManyReflection)
 
         { name: assoc.name,
-          entity: class_name,
           type: list ? "[#{class_name}Type]" : "#{class_name}Type",
           null: !list }
       end
