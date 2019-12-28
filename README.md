@@ -73,7 +73,7 @@ class CourseType < BaseObject
   field :grades, [GradeType], null: false do
     preload assignments: :grade
     # can alternatively provide a Proc that is given the following keywords:
-    # - object: the object represented by the type (eg: the model or entity)
+    # - object: tthe resolved object (usually a type)
     # - arguments: the arguments given to the field
     # - context: the graphql context
     preload_scope :grade_preload_scope
@@ -87,40 +87,105 @@ end
 
 _For more information about preloading and preload scopes please see the [Rails documentation](https://www.rubydoc.info/docs/rails/ActiveRecord/Associations/Preloader)._
 
-### GraphQL Entity
-
-A field extension that allows you to define entity wrappers for fields. This allows you to separate graphql-specific logic from your model classes.
-
-```ruby
-class UserType < BaseObject
-  field :devices, [DeviceType], null: false, preload: true do
-    # this will call Entities::DeviceEntity.wrap on the return value of the field and replace it
-    entity Entities::DeviceEntity
-  end
-end
-```
-
 ### GraphQL Authorize
 
 A field extension that allows you to specify authorization logic on a per-field basis.
 
+To create this logic, you create `GraphQLAuthorize::Policy` classes to describe discrete conditions.
+
+
 ```ruby
-module Policies
-  # falsey values will raise an execution error
-  # authorization procs are provided the following keywords
-  # - object: the raw graphql object
-  # - arguments: the field arguments
+class Authenticated < GraphQLAuthorize::Policy
+  # the call method is provided the following keywords:
+  # - object: the resolved object (usually a type)
+  # - arguments: the arguments given to the field
   # - context: the graphql context
-  # - field: the field instance itself
-  ATTENDS_COURSE = ->(object:, context:, **) { Course.find(object.object.id).attending?(context[:user_id]) }
+  # - field: the field object being evaluated
+  def call(context:, **)
+    context[:user_id].present?  # the return value of call is treated as true/false
+  end
 end
 
-class CourseType < BaseObject
-  field :syllabus, SyllabusType, null: false do
-    authorize Policies::ATTENDS_COURSE
+class AttendsCourse < GraphQLAuthorize::Policy
+  def call(object:, **)
+    course_id = object.object.id
+
+    CourseAttendance.exist?(user_id: context[:user_id], course_id: course_id)
   end
 end
 ```
+
+You can then use policy objects directly:
+
+```ruby
+class QueryType < BaseObject
+  field :current_user, UserType, null: false do
+    authorize Authenticated.new
+  end
+end
+```
+
+Or chain them with other policies
+
+```ruby
+class CourseType < BaseObject
+  field :syllabus, SyllabusType, null: false do
+    authorize Authenticated.new.and(AttendsCourse.new)
+  end
+end
+```
+
+#### Important notes
+
+1. When using chaining (`Policy#and` / `#or` methods), policies are executed in order and a failing condition does not end the process.
+
+    ```ruby
+      class Failure < GraphQLAuthorize::Policy
+        def call(**)
+          puts "Failure#call"
+          false
+        end
+      end
+
+      authorize Failure.new.and(Failure.new)
+      # STDOUT => "Failure.call" (x2)
+    ```
+
+2. Policies are just objects, so you can add extra data at initialization
+
+    ```ruby
+    class PermissionLevel < GraphQLAuthorize::Policy
+      def initialize(level)
+        @level = level
+      end
+
+      def call(context:, **)
+        context[:permission] >= @level
+      end
+    end
+
+    class QueryContext < BaseObject
+      field :all_users, [UserType], null: false do
+        authorize PermissionLevel.new(PermissionEnum::ADMIN)
+      end
+    end
+    ```
+
+3. Similarily you can also freeze objects for efficiency and ease of use.
+
+    ```ruby
+    # you can create pre-configured policies:
+    module Policies
+      USER = PermissionLevel.new(PermissionEnum::USER).freeze
+      ADMIN = PermissionLevel.new(PermissionEnum::ADMIN).freeze
+      SUPERADMIN = PermissionLevel.new(PermissionEnum::SUPERADMIN).freeze
+
+      ELEVATED = ADMIN.or(SUPERADMIN).freeze
+    end
+
+    # then use:
+    authorize Policies::ELEVATED
+    ```
 
 ### GraphQL Type Generator
 

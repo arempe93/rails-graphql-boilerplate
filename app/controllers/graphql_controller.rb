@@ -24,7 +24,6 @@ class GraphQLController < ApplicationController
 
   def context
     {
-      authenticated: RequestStore[:user_id].present?,
       device: RequestStore[:device],
       device_id: RequestStore[:device_id],
       request: {
