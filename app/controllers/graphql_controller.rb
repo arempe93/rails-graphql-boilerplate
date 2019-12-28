@@ -12,8 +12,6 @@ class GraphQLController < ApplicationController
              end
 
     render json: result
-  rescue GraphQL::Guard::NotAuthorizedError => e
-    render_graphql_error(e, code: 'UNAUTHORIZED', status: 401)
   rescue StandardError => e
     Rails.logger.error e.full_message
 

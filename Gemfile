@@ -1,7 +1,7 @@
 ruby '2.6.2'
 source 'https://rubygems.org'
 
-gem 'rails', '= 6.0.0'
+gem 'rails', '= 6.0.2'
 
 # API Helpers
 gem 'request_store'
@@ -12,7 +12,6 @@ gem 'rack-cors', require: 'rack/cors'
 # Graphql
 gem 'graphql'
 gem 'graphql-batch'
-gem 'graphql-guard'
 gem 'graphiql-rails'
 
 # Enums
