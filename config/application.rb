@@ -20,6 +20,14 @@ Bundler.require(*Rails.groups)
 
 require_relative '../lib/tagged_timestamp_formatter'
 
+def init_logfile(filename)
+  dirname = File.dirname(filename)
+  return if File.exist?(dirname)
+
+  FileUtils.mkdir_p(dirname)
+  FileUtils.touch(filename)
+end
+
 # TODO: rename to your application name
 module YourApplication
   class Application < Rails::Application
@@ -39,7 +47,11 @@ module YourApplication
     config.autoload_paths << "#{config.root}/lib"
 
     # Log to STDOUT if flag set
-    log_output = ENV['RAILS_LOG_TO_STDOUT'] ? STDOUT : "log/#{Rails.env}.log"
+    log_output = if ENV['RAILS_LOG_TO_STDOUT']
+                   STDOUT
+                 else
+                   "log/#{Rails.env}.log".tap { |f| init_logfile(f) }
+                 end
 
     # Support tagged logging and timestamp coloring
     logger = ActiveSupport::Logger.new(log_output)
