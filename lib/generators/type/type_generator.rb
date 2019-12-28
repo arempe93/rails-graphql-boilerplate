@@ -5,7 +5,6 @@ class TypeGenerator < Rails::Generators::NamedBase
 
   def generate_files
     template 'type.erb', "app/graphql/types/#{file_name}_type.rb"
-    template 'entity.erb', "app/graphql/entities/#{file_name}.rb"
   end
 
   private
