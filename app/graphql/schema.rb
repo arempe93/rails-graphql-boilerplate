@@ -2,7 +2,6 @@
 
 require 'graphql_authorize'
 require 'graphql_preload'
-require 'graphql_entity'
 
 class Schema < GraphQL::Schema
   query Types::QueryType
